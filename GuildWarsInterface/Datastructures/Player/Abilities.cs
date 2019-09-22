@@ -44,7 +44,7 @@ namespace GuildWarsInterface.Datastructures.Player
                                                                 IdManager.GetId(Game.Player.Character),
                                                                 (byte) _profession.Primary,
                                                                 (byte) _profession.Secondary,
-                                                                (byte) 1);
+                                                                (byte) 1); // maybe 0
                                 }
                         }
                 }

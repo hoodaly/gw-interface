@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Linq;
 using GuildWarsInterface.Controllers.AuthControllers;
 using GuildWarsInterface.Controllers.Base;
 using GuildWarsInterface.Declarations;
@@ -31,11 +32,17 @@ namespace GuildWarsInterface.Networking.Servers
 
                 protected override void Received(byte[] data)
                 {
+                        if (data.Length <= 0)
+                        {
+                                return;
+                        }
                         switch (BitConverter.ToUInt16(data, 0))
                         {
                                 case 1024:
+                                        // ClientVersion Packet
                                         return;
                                 case 16896:
+                                        // ClientSeed Packet
                                         Network.AuthServer.Send(5633, new byte[20]);
                                         Game.State = GameState.LoginScreen;
                                         return;

@@ -26,8 +26,9 @@ namespace GuildWarsInterface.Modification.Hooks
 
 
                 internal static void Install()
-                {
-                        var hookLocation = new IntPtr(0x005D2EF1);
+        {
+            return;
+            var hookLocation = new IntPtr(0x005D2EF1);
 
                         IntPtr codeCave = Marshal.AllocHGlobal(128);
                         _speedModifierLocation = Marshal.AllocHGlobal(4);

@@ -7,8 +7,9 @@ namespace GuildWarsInterface.Modification.Hooks
         internal class AgentTrackerHook
         {
                 internal static void Install(HookType hook)
-                {
-                        var hookLocation1 = new IntPtr(0x005D53B1);
+        {
+            return;
+            var hookLocation1 = new IntPtr(0x005D53B1);
                         var hookLocation = new IntPtr(0x005D5590);
 
                         IntPtr codeCave2 = Marshal.AllocHGlobal(4);

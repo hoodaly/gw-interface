@@ -18,12 +18,12 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(150, AcceptJoinRequestHandler);
+                        /*controllerManager.RegisterHandler(150, AcceptJoinRequestHandler);
                         controllerManager.RegisterHandler(151, KickInviteHandler);
                         controllerManager.RegisterHandler(152, KickJoinRequestHandler);
                         controllerManager.RegisterHandler(154, InviteHandler);
                         controllerManager.RegisterHandler(156, LeaveHandler);
-                        controllerManager.RegisterHandler(163, KickMemberHandler);
+                        controllerManager.RegisterHandler(163, KickMemberHandler);*/
                 }
 
                 private void KickMemberHandler(List<object> objects)

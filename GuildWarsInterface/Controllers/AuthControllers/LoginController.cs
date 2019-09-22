@@ -15,14 +15,14 @@ namespace GuildWarsInterface.Controllers.AuthControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(18, LoginHandler18);
+                        controllerManager.RegisterHandler(56, LoginHandler56);
                 }
 
-                private void LoginHandler18(List<object> data)
+                private void LoginHandler56(List<object> data)
                 {
                         Network.AuthServer.TransactionCounter = (uint) data[1];
 
-                        if (AuthLogic.Login((string) data[4], (string) data[5], (string) data[7]))
+                        if (AuthLogic.Login(System.BitConverter.ToString((byte[]) data[2]), System.BitConverter.ToString((byte[])data[3]), (string) data[5]))
                         {
                                 Game.State = GameState.CharacterScreen;
 
