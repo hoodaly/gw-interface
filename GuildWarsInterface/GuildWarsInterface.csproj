@@ -137,10 +137,8 @@
     <Compile Include="Modification\Hooks\ConnectHook.cs" />
     <Compile Include="Modification\Hooks\HookHelper.cs" />
     <Compile Include="Modification\Native\Kernel32.cs" />
-    <Compile Include="Networking\Base\Connection.cs" />
     <Compile Include="Networking\Servers\GameServer.cs" />
     <Compile Include="Controllers\Base\IController.cs" />
-    <Compile Include="Networking\Base\Listener.cs" />
     <Compile Include="Networking\Servers\AuthServer.cs" />
     <Compile Include="Modification\Patches\DisableEncryptionPatch.cs" />
     <Compile Include="Modification\Patches\PortPatch.cs" />
