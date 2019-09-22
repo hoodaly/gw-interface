@@ -13,7 +13,7 @@ namespace GuildWarsInterface.Modification.Hooks
                 private static HookType _hookDelegate;
                 private static HookType _originalDelegate;
 
-                private static readonly IntPtr _hookAddress = (IntPtr) 0x005CC67C;
+                private static readonly IntPtr _hookAddress = (IntPtr) 0x005D6A06;
 
                 public static string LastHostName { get; private set; }
 
