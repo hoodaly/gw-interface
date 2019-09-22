@@ -79,7 +79,8 @@ namespace GuildWarsInterface.Networking.Protocol
                         using (var stream = new MemoryStream(data))
                         using (var reader = new BinaryReader(stream))
                         {
-                                IntPtr message = Marshal.ReadIntPtr(_address + 0x1C) + 0x8 * reader.ReadUInt16();
+                                int header = reader.ReadUInt16() & ~0x8000;
+                                IntPtr message = Marshal.ReadIntPtr(_address + 0x1C) + 0x8 * header;
 
                                 packet = new List<object> {Marshal.ReadInt32(Marshal.ReadIntPtr(message))};
 
