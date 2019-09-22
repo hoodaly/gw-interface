@@ -52,7 +52,7 @@ namespace GuildWarsInterface
                                         }
                                 });
 
-                                SpeedModifierHook.Install();
+                                //SpeedModifierHook.Install();
 
                                 Network.Initialize();
 
@@ -89,7 +89,7 @@ namespace GuildWarsInterface
                                                         (uint) newZone.Map,
                                                         new byte[]
                                                                 {
-                                                                        0x02, 0x00, 0x23, 0x98, 0x7F, 0x00, 0x00, 0x01,
+                                                                        0x02, 0x00, 0x23, 0x98, 0x22, 0x22, 0x22, 0x22,
                                                                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                                                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
                                                                 },
@@ -102,7 +102,7 @@ namespace GuildWarsInterface
                                 Network.GameServer.Send(GameServerMessage.Dispatch,
                                                         new byte[]
                                                                 {
-                                                                        0x02, 0x00, 0x23, 0x98, 0x7F, 0x00, 0x00, 0x01,
+                                                                        0x02, 0x00, 0x23, 0x98, 0x22, 0x22, 0x22, 0x22,
                                                                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                                                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
                                                                 },

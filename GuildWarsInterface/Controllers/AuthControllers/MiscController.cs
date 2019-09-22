@@ -104,16 +104,16 @@ namespace GuildWarsInterface.Controllers.AuthControllers
                                 Game.State = GameState.CharacterCreation;
 
                                 Network.AuthServer.Send(AuthServerMessage.Dispatch,
-                                                        Network.AuthServer.TransactionCounter,
-                                                        0,
-                                                        mapId,
-                                                        new byte[]
-                                                                {
-                                                                        0x02, 0x00, 0x23, 0x98, 0x7F, 0x00, 0x00, 0x01,
-                                                                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                                                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                                                                },
-                                                        0);
+                                                Network.AuthServer.TransactionCounter,
+                                                0,
+                                                mapId,
+                                                new byte[]
+                                                        {
+                                                                0x02, 0x00, 0x23, 0x98, 0x22, 0x22, 0x22, 0x22,
+                                                                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                                                        },
+                                                0);
                         }
                 }
 

@@ -3,6 +3,7 @@
 using System;
 using System.Net;
 using System.Runtime.InteropServices;
+using GuildWarsInterface.Debugging;
 using GuildWarsInterface.Modification.Native;
 using GuildWarsInterface.Networking.Servers;
 
@@ -15,7 +16,7 @@ namespace GuildWarsInterface.Modification.Hooks
                 private static HookType _hookDelegate;
                 private static HookType _originalDelegate;
 
-                private static readonly IntPtr _hookAddress = (IntPtr) 0x00403B7A;
+                private static readonly IntPtr _hookAddress = (IntPtr) 0x00403DEA;
 
                 public static void Install()
                 {
@@ -31,10 +32,18 @@ namespace GuildWarsInterface.Modification.Hooks
                 private static int Hook(uint socket, IntPtr addr, uint addrLen)
                 {
                         const short STANDARD_GAMESERVER_PORT = 9112;
+                        short sin_family = Marshal.ReadInt16(addr, 0);
+                        ushort sin_port = (ushort)Marshal.ReadInt16(addr, 2);
+                        byte ip0 = Marshal.ReadByte(addr, 4);
+                        byte ip1 = Marshal.ReadByte(addr, 5);
+                        byte ip2 = Marshal.ReadByte(addr, 6);
+                        byte ip3 = Marshal.ReadByte(addr, 7);
 
                         short port = Marshal.ReadInt16(addr + 2);
 
-                        if (BigEndian(port) != STANDARD_GAMESERVER_PORT)
+                        Debug.Log("Connect " + GetHostByNameHook.LastHostName + " (" + socket + ", " + BigEndian(port) + "): " + sin_family + ", " + sin_port + ", " + ip0 + "." + ip1 + "." + ip2 + "." + ip3);
+
+                        if (BigEndian(port) != STANDARD_GAMESERVER_PORT && !(ip0 == 0x22 && ip1 == 0x22 && ip2 == 0x22 && ip3 == 0x22))
                         {
                                 Marshal.WriteInt16(addr + 2, GetHostByNameHook.LastHostName.StartsWith("Auth") ? BigEndian(AuthServer.PORT) : BigEndian(FileServer.PORT));
                         }
