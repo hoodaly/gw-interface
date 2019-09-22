@@ -54,7 +54,7 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                 private void InstanceLoadRequestPlayerDataHandler(List<object> objects)
                 {
-                        Network.GameServer.Send(GameServerMessage.PlayerData230, 0x61747431);
+                        Network.GameServer.Send(GameServerMessage.PlayerData230, 1886151033);
 
                         Game.Player.Abilities.LoadAbilities1();
 

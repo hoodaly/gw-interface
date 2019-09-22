@@ -95,7 +95,7 @@ namespace GuildWarsInterface.Datastructures.Agents
                                                 Speed,
                                                 float.PositiveInfinity,
                                                 0,
-                                                (allied ? 0x61747431 : a),
+                                                (allied ? 1886151033 : a),
                                                 0,
                                                 0,
                                                 0,
