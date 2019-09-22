@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Threading;
 using GuildWarsInterface.Controllers.Base;
 using GuildWarsInterface.Controllers.GameControllers;
 using GuildWarsInterface.Declarations;
@@ -38,6 +39,10 @@ namespace GuildWarsInterface.Networking.Servers
 
                 protected override void Received(byte[] data)
                 {
+                        if (data.Length <= 0)
+                        {
+                                return;
+                        }
                         switch (BitConverter.ToUInt16(data, 0))
                         {
                                 case 1280:
@@ -48,17 +53,16 @@ namespace GuildWarsInterface.Networking.Servers
                                         if (Game.State != GameState.CharacterCreation)
                                         {
                                                 Network.GameServer.Send(GameServerMessage.InstanceLoadHead,
-                                                                        (byte) 0x3F,
-                                                                        (byte) 0x3F,
-                                                                        (byte) 0,
-                                                                        (byte) 0);
+                                                                        (byte)0x1F,
+                                                                        (byte)0x1F,
+                                                                        (byte)0,
+                                                                        (byte)0);
 
                                                 Network.GameServer.Send(GameServerMessage.InstanceLoadDistrictInfo,
                                                                         IdManager.GetId(Game.Player.Character),
                                                                         (ushort) Game.Zone.Map,
                                                                         (byte) (Game.Zone.IsExplorable ? 1 : 0),
-                                                                        (ushort) 1,
-                                                                        (ushort) 0,
+                                                                        (uint) 1,
                                                                         (byte) 0,
                                                                         (byte) 0);
                                         }
