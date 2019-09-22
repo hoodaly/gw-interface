@@ -1,6 +1,7 @@
 #region
 
 using GuildWarsInterface.Networking.Servers.Base;
+using System;
 
 #endregion
 
@@ -17,13 +18,18 @@ namespace GuildWarsInterface.Networking.Servers
 
                 protected override void Received(byte[] data)
                 {
-                        Send(new byte[]
-                                {
-                                        0xF1, 0x02, 0x20, 0x00, 0x6F, 0xC0, 0x05, 0x00,
-                                        0xB3, 0xC9, 0x05, 0x00, 0x9C, 0x43, 0x05, 0x00,
-                                        0xB5, 0xC9, 0x05, 0x00, 0xB6, 0xC9, 0x05, 0x00,
-                                        0xB7, 0xC9, 0x05, 0x00, 0xB4, 0xC9, 0x05, 0x00
-                                });
+                        if (data.Length <= 0)
+                        {
+                                return;
+                        }
+                        if (BitConverter.ToUInt16(data, 0) == 0x10f1)
+                        {
+                                return;
+                        }
+                        Send(new byte[] {
+                                0xf1, 0x02, 0x20, 0x00, 0x61, 0xcb, 0x05, 0x00, 0x62, 0xcb, 0x05, 0x00, 0x9c, 0x43, 0x05, 0x00,
+                                0x88, 0xcb, 0x05, 0x00, 0x89, 0xcb, 0x05, 0x00, 0x8a, 0xcb, 0x05, 0x00, 0x87, 0xcb, 0x05, 0x00
+                        });
                 }
         }
 }
