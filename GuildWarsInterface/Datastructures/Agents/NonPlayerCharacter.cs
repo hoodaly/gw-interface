@@ -51,7 +51,7 @@ namespace GuildWarsInterface.Datastructures.Agents
                                                 (byte) 20,
                                                 new[] {(char) 0x8102, (char) 0x58FA});
 
-                        if ((ulong)_model > 0xFFFFFFFF) Network.GameServer.Send(GameServerMessage.NpcModel, IdManager.GetId(this), new[] { (uint)((ulong)_model >> 32) });
+                        if ((ulong)_model > 0xFFFFFFFF) Network.GameServer.Send(GameServerMessage.NpcModel, IdManager.GetId(this), (ushort)1, new[] { (uint)((ulong)_model >> 32) });
 
                         Network.GameServer.Send(GameServerMessage.NpcName, IdManager.GetId(this), new HString(Name).Serialize());
 
