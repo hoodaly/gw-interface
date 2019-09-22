@@ -17,9 +17,9 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(139, InstanceLoadRequestItemsHandler);
-                        controllerManager.RegisterHandler(130, InstanceLoadRequestMapDataHandler);
-                        controllerManager.RegisterHandler(138, InstanceLoadRequestPlayerDataHandler);
+                        controllerManager.RegisterHandler(152, InstanceLoadRequestItemsHandler);
+                        controllerManager.RegisterHandler(142, InstanceLoadRequestMapDataHandler);
+                        controllerManager.RegisterHandler(151, InstanceLoadRequestPlayerDataHandler);
                 }
 
                 private void InstanceLoadRequestItemsHandler(List<object> objects)
@@ -40,9 +40,12 @@ namespace GuildWarsInterface.Controllers.GameControllers
                                                 MapData.GetMapFile(Game.Zone.Map),
                                                 data[0],
                                                 data[1],
-                                                (ushort) 0,
-                                                (byte) 0,
-                                                (byte) 0);
+                                                (ushort)0,
+                                                (byte)0,
+                                                (byte)0,
+                                                (uint)0x77419ff5,
+                                                (uint)0x01d56fc0);
+                                                //new byte[] { 0xf5, 0x9f, 0x41, 0x77, 0xc0, 0x6f, 0xd5, 0x01 });
 
                         foreach (Map unlockedOutpost in Enum.GetValues(typeof (Map)).Cast<Map>())
                         {
