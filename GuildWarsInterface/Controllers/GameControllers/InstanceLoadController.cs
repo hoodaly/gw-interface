@@ -26,7 +26,7 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                 private void InstanceLoadRequestItemsHandler(List<object> objects)
                 {
-                        Network.GameServer.Send(GameServerMessage.CreateInventory, (ushort) 1, (byte) 0);
+                        Game.Player.Character.Inventory.CreateStream();
                         Network.GameServer.Send(GameServerMessage.UpdateActiveWeaponset, (ushort) 1, (byte) 0);
 
                         Game.Player.Character.Inventory.LoadItems();
@@ -49,13 +49,14 @@ namespace GuildWarsInterface.Controllers.GameControllers
                                                 (uint)0x01d56fc0);
                                                 //new byte[] { 0xf5, 0x9f, 0x41, 0x77, 0xc0, 0x6f, 0xd5, 0x01 });
 
-                        foreach (Map unlockedOutpost in Enum.GetValues(typeof (Map)).Cast<Map>())
+                private void InstanceLoadRequestPlayerDataHandler(List<object> objects)
+                {
+                        foreach (Map unlockedOutpost in Enum.GetValues(typeof(Map)).Cast<Map>())
                         {
                                 Network.GameServer.Send(GameServerMessage.ShowOutpostOnWorldMap,
-                                                        (ushort) unlockedOutpost,
-                                                        (byte) 0);
+                                                        (ushort)unlockedOutpost,
+                                                        (byte)0); //unknown
                         }
-                }
 
                 private void InstanceLoadRequestPlayerDataHandler(List<object> objects)
                 {
