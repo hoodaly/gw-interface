@@ -68,53 +68,78 @@ namespace GuildWarsInterface.Networking.Servers.Base
                         });
                         _server.Start();
                 }
-                
+
+                protected void PrepareStream(ref BinaryWriter writer, int messageId, params object[] parameters) {
+                        writer.Write((ushort)messageId);
+
+                        for (int i = 0; i < parameters.Length; i++)
+                        {
+                                dynamic value = parameters[i];
+
+                                if (value is string) value = value.ToCharArray();
+
+                                if (value is Array)
+                                {
+                                        switch (Protocol.PrefixSize(messageId, i + 1))
+                                        {
+                                                case 1:
+                                                        writer.Write((byte)value.Length);
+                                                        break;
+                                                case 2:
+                                                        writer.Write((ushort)value.Length);
+                                                        break;
+                                        }
+
+                                        foreach (dynamic element in value)
+                                        {
+                                                if (element is char)
+                                                {
+                                                        writer.Write((ushort)element);
+                                                }
+                                                else
+                                                {
+                                                        writer.Write(element);
+                                                }
+                                        }
+                                }
+                                else
+                                {
+                                        writer.Write(value);
+                                }
+                        }
+                }
+
                 protected void Send(int messageId, params object[] parameters)
                 {
                         try
                         {
                                 using (var stream = new MemoryStream())
-                                using (var writer = new BinaryWriter(stream))
                                 {
-                                        writer.Write((ushort)messageId);
-
-                                        for (int i = 0; i < parameters.Length; i++)
-                                        {
-                                                dynamic value = parameters[i];
-
-                                                if (value is string) value = value.ToCharArray();
-
-                                                if (value is Array)
-                                                {
-                                                        switch (Protocol.PrefixSize(messageId, i + 1))
-                                                        {
-                                                                case 1:
-                                                                        writer.Write((byte) value.Length);
-                                                                        break;
-                                                                case 2:
-                                                                        writer.Write((ushort) value.Length);
-                                                                        break;
-                                                        }
-
-                                                        foreach (dynamic element in value)
-                                                        {
-                                                                if (element is char)
-                                                                {
-                                                                        writer.Write((ushort) element);
-                                                                }
-                                                                else
-                                                                {
-                                                                        writer.Write(element);
-                                                                }
-                                                        }
-                                                }
-                                                else
-                                                {
-                                                        writer.Write(value);
-                                                }
-                                        }
-
+                                        var writer = new BinaryWriter(stream);
+                                        PrepareStream(ref writer, messageId, parameters);
                                         Send(stream.ToArray());
+                                        writer.Close();
+                                }
+                        }
+                        catch (SocketException e)
+                        {
+                                Debug.Log("Send error: " + e.Message + ": " + e.StackTrace);
+                        }
+                }
+
+                protected void Send(List<KeyValuePair<int, object[]>> args)
+                {
+                        try
+                        {
+                                using (var stream = new MemoryStream())
+                                {
+                                        var writer = new BinaryWriter(stream);
+                                        foreach (var p in args)
+                                        {
+                                                PrepareStream(ref writer, p.Key, p.Value);
+                                        }
+                                        Send(stream.ToArray());
+                                        writer.Close();
                                 }
                         }
                         catch (SocketException e)
