@@ -47,14 +47,14 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                         Network.GameServer.Send(GameServerMessage.InstanceLoadMapData,
                                                 MapData.GetMapFile(Game.Zone.Map),
-                                                data[0],
-                                                data[1],
-                                                (ushort)0,
-                                                (byte)0,
-                                                (byte)0,
-                                                (uint)0x77419ff5,
-                                                (uint)0x01d56fc0);
-                                                //new byte[] { 0xf5, 0x9f, 0x41, 0x77, 0xc0, 0x6f, 0xd5, 0x01 });
+                                                data[0], //spawnposX
+                                                data[1], //spawnposY
+                                                (ushort)0, //spawnPlane
+                                                (byte)254, //unknown
+                                                (byte)0, //isCinematic
+                                                (ulong)(DateTime.Now.Ticks / 10));
+                        //new byte[] { 0xf5, 0x9f, 0x41, 0x77, 0xc0, 0x6f, 0xd5, 0x01 });
+                }
 
                 private void InstanceLoadRequestPlayerDataHandler(List<object> objects)
                 {
