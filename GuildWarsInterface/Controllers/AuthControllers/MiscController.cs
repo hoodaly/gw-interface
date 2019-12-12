@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -148,6 +148,7 @@ namespace GuildWarsInterface.Controllers.AuthControllers
                                 Debug.ThrowException(new Exception("account does not contain " + characterToDelete));
                         }
 
+                        AuthLogic.DeleteCharacter(characterToDelete);
                         Game.Player.Account.RemoveCharacter(characterToDelete);
 
                         Network.AuthServer.SendTransactionSuccessCode(TransactionSuccessCode.Success);
