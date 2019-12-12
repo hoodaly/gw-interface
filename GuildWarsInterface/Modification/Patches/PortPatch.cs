@@ -17,7 +17,6 @@ namespace GuildWarsInterface.Modification.Patches
 
         public static void Apply()
         {
-                        return;
                 List<int> addrs = HookHelper.searchAsm(new byte[] { 0x8D, 0x53, 0x3c, 0x89, 0x7e, 0x08 });
                 foreach (int addr in addrs)
                 {
