@@ -1,9 +1,10 @@
-﻿#region
+#region
 
 using System.Collections.Generic;
 using GuildWarsInterface.Controllers.Base;
 using GuildWarsInterface.Datastructures.Agents.Components;
 using GuildWarsInterface.Declarations;
+using GuildWarsInterface.Networking.Protocol;
 
 #endregion
 
@@ -13,9 +14,9 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(55, KeyboardMoveHandler);
-                        controllerManager.RegisterHandler(56, MouseMoveHandler);
-                        controllerManager.RegisterHandler(65, KeyboardStopMovingHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.KeyboardMove, KeyboardMoveHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.MouseMove, MouseMoveHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.KeyboardStopMoving, KeyboardStopMovingHandler);
                 }
 
                 private void KeyboardMoveHandler(List<object> objects)

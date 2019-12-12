@@ -7,6 +7,7 @@ using GuildWarsInterface.Datastructures.Agents.Components;
 using GuildWarsInterface.Debugging;
 using GuildWarsInterface.Declarations;
 using GuildWarsInterface.Logic;
+using GuildWarsInterface.Networking.Protocol;
 using Attribute = GuildWarsInterface.Declarations.Attribute;
 
 #endregion
@@ -17,12 +18,12 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(7, DecreaseAttributeHandler);
+                        /*controllerManager.RegisterHandler(7, DecreaseAttributeHandler);
                         controllerManager.RegisterHandler(8, IncreaseAttributeHandler);
-                        controllerManager.RegisterHandler(59, ChangeSecondProfessionHandler);
-                        controllerManager.RegisterHandler(85, EquipSkillHandler);
-                        controllerManager.RegisterHandler(87, SwapSkillHandler);
-                        controllerManager.RegisterHandler(88, MoveSkillToEmptySlotHandler);
+                        controllerManager.RegisterHandler(59, ChangeSecondProfessionHandler);*/
+                        controllerManager.RegisterHandler((int)GameClientMessage.EquipSkill, EquipSkillHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.SwapSkill, SwapSkillHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.MoveSkillToEmptySlot, MoveSkillToEmptySlotHandler);
                 }
 
                 private void DecreaseAttributeHandler(List<object> objects)

@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -19,9 +19,9 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(152, InstanceLoadRequestItemsHandler);
-                        controllerManager.RegisterHandler(142, InstanceLoadRequestMapDataHandler);
-                        controllerManager.RegisterHandler(151, InstanceLoadRequestPlayerDataHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.InstanceLoadRequestItems, InstanceLoadRequestItemsHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.InstanceLoadRequestMapData, InstanceLoadRequestMapDataHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.InstanceLoadRequestPlayerData, InstanceLoadRequestPlayerDataHandler);
                 }
 
                 private void InstanceLoadRequestItemsHandler(List<object> objects)

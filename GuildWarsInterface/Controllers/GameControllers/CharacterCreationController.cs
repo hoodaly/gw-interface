@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -21,17 +21,17 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(89, CharacterCreateUpdateCampaignAndProfessionHandler_);
-                        controllerManager.RegisterHandler(131, CreateNewCharacterHandler_);
-                        controllerManager.RegisterHandler(133, ValidateNewCharacterHandler_);
+                        controllerManager.RegisterHandler((int)GameClientMessage.CharacterCreateUpdateCampaignAndProfession, CharacterCreateUpdateCampaignAndProfessionHandler_);
+                        controllerManager.RegisterHandler((int)GameClientMessage.CreateNewCharacter, CreateNewCharacterHandler_);
+                        controllerManager.RegisterHandler((int)GameClientMessage.ValidateNewCharacter, ValidateNewCharacterHandler_);
                 }
 
                 private void CreateNewCharacterHandler_(List<object> objects)
                 {
                         Network.GameServer.Send(GameServerMessage.SetAttributePoints,
                                                 IdManager.GetId(_characterCreationAgent),
-                                                (byte) 0,
-                                                (byte) 0);
+                                                (byte) 0, //freePts
+                                                (byte) 0); //maxPts
 
                         _characterCreationAgent.SendAgentPropertyInt(AgentProperty.UnknownUsedForSuccessfulCharcreation, 0);
 
@@ -42,9 +42,9 @@ namespace GuildWarsInterface.Controllers.GameControllers
                 {
                         Network.GameServer.Send(GameServerMessage.UpdatePrivateProfessions,
                                                 IdManager.GetId(_characterCreationAgent),
-                                                (byte) objects[2],
-                                                (byte) 0,
-                                                (byte) 1);
+                                                (byte) objects[2], //primaryProf
+                                                (byte) 0, //secondaryProf
+                                                (byte) 1); //isPvP
                 }
 
                 private void ValidateNewCharacterHandler_(List<object> objects)

@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -17,10 +17,11 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(2, ExitToCharacterScreenHandler);
-                        controllerManager.RegisterHandler(3, ExitToLoginScreenHandler);
-                        controllerManager.RegisterHandler(171, ChangeMapHandler);
-                        controllerManager.RegisterHandler(78, StylistChangeAppearanceHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.ExitToCharacterScreen, ExitToCharacterScreenHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.ExitToLoginScreen, ExitToLoginScreenHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.CommitMapChange, CommitMapChangeHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.ChangeMap, ChangeMapHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.StylistChangeAppearance, StylistChangeAppearanceHandler);
                 }
 
                 private void StylistChangeAppearanceHandler(List<object> objects)

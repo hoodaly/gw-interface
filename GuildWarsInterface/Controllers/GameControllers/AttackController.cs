@@ -12,7 +12,7 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(45, AttackHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.Attack, AttackHandler);
                 }
 
                 private void AttackHandler(List<object> objects)

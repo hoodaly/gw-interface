@@ -1,9 +1,10 @@
-﻿#region
+#region
 
 using System.Collections.Generic;
 using GuildWarsInterface.Controllers.Base;
 using GuildWarsInterface.Interaction;
 using GuildWarsInterface.Logic;
+using GuildWarsInterface.Networking.Protocol;
 
 #endregion
 
@@ -13,7 +14,7 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(94, ChatHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.Chat, ChatHandler);
                 }
 
                 private void ChatHandler(List<object> objects)

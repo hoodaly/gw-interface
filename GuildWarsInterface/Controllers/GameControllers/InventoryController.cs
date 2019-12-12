@@ -1,7 +1,13 @@
-﻿#region
+#region
 
+using System;
 using System.Collections.Generic;
 using GuildWarsInterface.Controllers.Base;
+using GuildWarsInterface.Datastructures.Items;
+using GuildWarsInterface.Declarations;
+using GuildWarsInterface.Debugging;
+using GuildWarsInterface.Misc;
+using GuildWarsInterface.Networking.Protocol;
 
 #endregion
 
@@ -11,13 +17,13 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(42, EquipItemHandler);
-                        controllerManager.RegisterHandler(44, ChangeWeaponsetHandler);
-                        controllerManager.RegisterHandler(73, UnEquipItemHandler);
-                        controllerManager.RegisterHandler(101, EquipBagHandler);
-                        controllerManager.RegisterHandler(110, MoveBagHandler);
-                        controllerManager.RegisterHandler(108, MoveItemHandler);
-                        controllerManager.RegisterHandler(119, UnEquipBagHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.EquipItem, EquipItemHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.ChangeWeaponset, ChangeWeaponsetHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.UnEquipItem, UnEquipItemHandler);
+                        //controllerManager.RegisterHandler(101, EquipBagHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.MoveBag, MoveBagHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.MoveItem, MoveItemHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.UnEquipBag, UnEquipBagHandler);
                 }
 
                 private void EquipItemHandler(List<object> objects)

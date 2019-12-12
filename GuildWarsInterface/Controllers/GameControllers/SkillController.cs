@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System.Collections.Generic;
 using GuildWarsInterface.Controllers.Base;
@@ -18,7 +18,7 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(64, CastSkillHandler);
+                        controllerManager.RegisterHandler((int) GameClientMessage.CastSkill, CastSkillHandler);
                 }
 
                 private void CastSkillHandler(List<object> objects)
