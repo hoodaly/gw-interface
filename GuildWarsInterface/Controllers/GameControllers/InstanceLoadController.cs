@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using GuildWarsInterface.Controllers.Base;
 using GuildWarsInterface.Declarations;
+using GuildWarsInterface.Datastructures.Items;
+using GuildWarsInterface.Datastructures.Components;
 using GuildWarsInterface.Misc;
 using GuildWarsInterface.Networking;
 using GuildWarsInterface.Networking.Protocol;
@@ -29,6 +31,11 @@ namespace GuildWarsInterface.Controllers.GameControllers
                         Game.Player.Character.Inventory.CreateStream();
                         Network.GameServer.Send(GameServerMessage.UpdateActiveWeaponset, (ushort) 1, (byte) 0);
 
+                        Item item = new Item(ItemType.Dagger, 2147785208, "MOON", (ItemFlags)706876416, new ItemColor(Dye.Black), new ItemStat[] { new ItemStat(ItemStatIdentifier.WeaponRequirement, 0x1d, 0x09), new ItemStat(ItemStatIdentifier.DamageType, 0x02, 0x00), new ItemStat(ItemStatIdentifier.WeaponDamage, 0x11, 0x7) });
+                        Item bagItem = new Item(ItemType.Bag, 2147595574, "BAG", (ItemFlags)536875009, new ItemColor(0), new ItemStat[] { new ItemStat(ItemStatIdentifier.Slots, 20, 0) });
+                        //bagItem.Create();
+                        Game.Player.Character.Inventory.SetBag(bagItem, 0);
+                        Game.Player.Character.Inventory.SetItem(item, Game.Player.Character.Inventory.Backpack, 0);
                         Game.Player.Character.Inventory.LoadItems();
 
                         Network.GameServer.Send(GameServerMessage.ConnectionStatus, (byte) 0, (ushort) 0x160, 0x85EB21CD);
