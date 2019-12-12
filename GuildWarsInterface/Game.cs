@@ -73,13 +73,16 @@ namespace GuildWarsInterface
                         Network.GameServer.Send(GameServerMessage.OpenWindow, IdManager.GetId(Player.Character), (byte) window, data);
                 }
 
+                public static void StartMapChange()
+                {
+                        if (State == GameState.Playing) State = GameState.ChangingMap;
+                }
+
                 public static void ChangeMap(Map map, Action<Zone> initialization)
                 {
                         if (State == GameState.Playing) State = GameState.ChangingMap;
 
                         var newZone = new Zone(map);
-
-                        initialization(newZone);
 
                         if (State == GameState.CharacterScreen)
                         {
@@ -118,6 +121,8 @@ namespace GuildWarsInterface
                         {
                                 Debug.ThrowException(new Exception("cannot change zone in gamestate " + State));
                         }
+
+                        initialization(newZone);
 
                         Zone = newZone;
                 }
