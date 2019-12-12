@@ -1,16 +1,25 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Binarysharp.Assemblers.Fasm;
+using GuildWarsInterface.Debugging;
 
 namespace GuildWarsInterface.Modification.Hooks
 {
         internal class AgentTrackerHook
         {
                 internal static void Install(HookType hook)
-        {
-            return;
-            var hookLocation1 = new IntPtr(0x005D53B1);
-                        var hookLocation = new IntPtr(0x005D5590);
+                {
+                        // Get start of function
+                        List<int> addrs = HookHelper.searchAsm(new byte[] { 0x56, 0x57, 0x8d, 0x73, 0x78, 0x8d, 0x7d, 0xd0 });
+                        Debug.Requires(addrs.Count == 1);
+                        int addrStart = addrs[0];
+
+                        // End of function (5f 5e 5b c9 c2 08 00) is at addrStart + 0x01df
+                        int addrEnd = addrStart + 0x01df;
+
+                        var hookLocation1 = new IntPtr(addrStart);
+                        var hookLocation = new IntPtr(addrEnd);
 
                         IntPtr codeCave2 = Marshal.AllocHGlobal(4);
 
