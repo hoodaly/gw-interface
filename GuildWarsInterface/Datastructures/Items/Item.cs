@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using GuildWarsInterface.Datastructures.Agents;
@@ -65,6 +65,11 @@ namespace GuildWarsInterface.Datastructures.Items
                 public override string ToString()
                 {
                         return string.Format("[Item] {0}", Name);
+                }
+
+                public ItemType GetItemType()
+                {
+                        return _type;
                 }
         }
 }
