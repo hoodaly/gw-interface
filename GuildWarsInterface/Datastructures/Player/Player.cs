@@ -3,6 +3,7 @@
 using System;
 using GuildWarsInterface.Datastructures.Agents;
 using GuildWarsInterface.Datastructures.Components;
+using GuildWarsInterface.Datastructures.Items;
 using GuildWarsInterface.Debugging;
 using GuildWarsInterface.Declarations;
 using GuildWarsInterface.Modification.Hooks;
@@ -16,7 +17,7 @@ namespace GuildWarsInterface.Datastructures.Player
                 public readonly Abilities Abilities;
                 public readonly Account Account;
                 public readonly FriendList FriendList;
-
+                public readonly Inventory Inventory;
                 private PlayerCharacter _character;
 
                 internal Player()
@@ -24,6 +25,7 @@ namespace GuildWarsInterface.Datastructures.Player
                         Account = new Account();
                         Abilities = new Abilities();
                         FriendList = new FriendList();
+                        Inventory = new Inventory();
                 }
 
                 public PlayerStatus Status { get; internal set; }
