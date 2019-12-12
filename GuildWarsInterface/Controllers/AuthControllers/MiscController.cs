@@ -64,6 +64,7 @@ namespace GuildWarsInterface.Controllers.AuthControllers
                 {
                         Network.AuthServer.TransactionCounter = (uint) objects[1];
 
+                        // Wait for success from GameServer
                         Network.AuthServer.SendTransactionSuccessCode(TransactionSuccessCode.Success);
                 }
 

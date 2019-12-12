@@ -71,7 +71,8 @@ namespace GuildWarsInterface.Datastructures
 
                                 if (member == Leader) continue;
 
-                                Network.GameServer.Send(GameServerMessage.AddPartyMember, IdManager.GetId(this), (ushort) IdManager.GetId(member), (byte) 1);
+                                Network.GameServer.Send(GameServerMessage.AddPartyMember, IdManager.GetId(this), (ushort) IdManager.GetId(member),
+                                        (byte) 1); //isLoaded
                         }
 
                         if (_members.Contains(Game.Player.Character))

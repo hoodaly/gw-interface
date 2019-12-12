@@ -153,7 +153,9 @@ namespace GuildWarsInterface.Interaction
                 public static void ShowMessage(string message, Color color = Color.DarkOrangeDarkOrange)
                 {
                         Network.GameServer.Send(GameServerMessage.Message, new HString(message).Serialize());
-                        Network.GameServer.Send(GameServerMessage.MessageSenderAnonymous, (ushort) 2, (byte) color);
+                        Network.GameServer.Send(GameServerMessage.MessageSenderAnonymous,
+                                (ushort) 2, //owner
+                                (byte) color);
                 }
 
                 public static void ShowMessage(string message, string sender, string tag, Color color = Color.DarkOrangeDarkOrange)

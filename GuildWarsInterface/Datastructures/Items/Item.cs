@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GuildWarsInterface.Datastructures.Agents;
@@ -35,14 +35,14 @@ namespace GuildWarsInterface.Datastructures.Items
                                                 IdManager.GetId(this),
                                                 _model,
                                                 (byte) _type,
-                                                (byte) 1,
+                                                (byte) 3, //unknown
                                                 _color.Serialize(),
-                                                (ushort) 0,
-                                                (byte) 0,
+                                                (ushort) 0, //materials
+                                                (byte) 0, //unknown
                                                 (uint) _flags,
-                                                0,
-                                                0,
-                                                1,
+                                                0, //merchantPrice
+                                                0, //itemID
+                                                1, //quantity
                                                 new HString(Name).Serialize(),
                                                 _stats.Select(stat => stat.Serialize()).ToArray());
                 }

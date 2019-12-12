@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.IO;
@@ -136,9 +136,9 @@ namespace GuildWarsInterface.Datastructures.Agents
                                                 IdManager.GetId(this),
                                                 IdManager.GetId(this),
                                                 Appearance.GetPackedValue(),
-                                                (byte) 0,
-                                                0x800,
-                                                0,
+                                                (byte) 0, //unknown
+                                                0x800, //unknown
+                                                0, //unknown
                                                 Name);
                 }
 

@@ -1,4 +1,4 @@
-#region
+﻿#region
 
 using System.Collections.Generic;
 using GuildWarsInterface.Controllers.Base;
@@ -34,8 +34,8 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                                 Network.GameServer.Send(GameServerMessage.SkillRechargedVisualAutoAfterRecharge,
                                                         IdManager.GetId(Game.Player.Character),
-                                                        (ushort) objects[1],
-                                                        (uint) objects[2]);
+                                                        (ushort) objects[1], //skillID
+                                                        (uint) objects[2]); //skillInstance
 
                                 return;
                         }

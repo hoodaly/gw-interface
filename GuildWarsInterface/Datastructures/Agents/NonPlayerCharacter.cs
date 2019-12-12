@@ -42,14 +42,14 @@ namespace GuildWarsInterface.Datastructures.Agents
                 {
                         Network.GameServer.Send(GameServerMessage.NpcStats,
                                                 IdManager.GetId(this),
-                                                (uint)((ulong)_model & 0xFFFFFFFF),
-                                                0,
+                                                (uint)((ulong)_model & 0xFFFFFFFF), //file
+                                                0, //texture
                                                 _size << 24,
-                                                0,
+                                                0, //unknown
                                                 (uint) _flags,
                                                 (byte) Professions.Primary,
-                                                (byte) 20,
-                                                new[] {(char) 0x8102, (char) 0x58FA});
+                                                (byte) 20, //level
+                                                new[] {(char) 0x8102, (char) 0x58FA}); //name
 
                         if ((ulong)_model > 0xFFFFFFFF) Network.GameServer.Send(GameServerMessage.NpcModel, IdManager.GetId(this), (ushort)1, new[] { (uint)((ulong)_model >> 32) });
 

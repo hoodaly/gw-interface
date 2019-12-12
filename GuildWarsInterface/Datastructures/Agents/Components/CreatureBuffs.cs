@@ -78,7 +78,7 @@ namespace GuildWarsInterface.Datastructures.Agents.Components
 
                         internal void Remove()
                         {
-                                Network.GameServer.Send((GameServerMessage) 56,
+                                Network.GameServer.Send(GameServerMessage.SkillEffectRemove,
                                                         IdManager.GetId(Creature),
                                                         Id);
                         }
@@ -95,10 +95,10 @@ namespace GuildWarsInterface.Datastructures.Agents.Components
 
                         internal override void Show()
                         {
-                                Network.GameServer.Send((GameServerMessage) 54,
+                                Network.GameServer.Send(GameServerMessage.SkillEffectTimed,
                                                         IdManager.GetId(Creature),
                                                         (ushort) Skill,
-                                                        0,
+                                                        0, //unknown
                                                         Id,
                                                         Duration);
                         }

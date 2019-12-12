@@ -160,7 +160,7 @@ namespace GuildWarsInterface.Datastructures.Player
                         Network.GameServer.Send(GameServerMessage.SetAttributePoints,
                                                 IdManager.GetId(Game.Player.Character),
                                                 _freeAttributePoints,
-                                                (byte) 0);
+                                                (byte) 0); //maxPts
                 }
 
                 internal void LoadAbilities2()

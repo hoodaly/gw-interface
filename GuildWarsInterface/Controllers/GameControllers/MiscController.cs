@@ -30,7 +30,10 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                         Network.GameServer.Send(GameServerMessage.AccountCurrency, (ushort) 101, (ushort) 1, (ushort) 0);
                         Network.GameServer.Send(GameServerMessage.AccountCurrency, (ushort) 102, (ushort) 1, (ushort) 0);
-                        Network.GameServer.Send(GameServerMessage.OpenWindow, 0, (byte) 3, 0);
+                        Network.GameServer.Send(GameServerMessage.OpenWindow,
+                                0, //agent
+                                (byte) 3, //windowType
+                                0); //data
 
                         Console.WriteLine(Game.Player.Character.Appearance);
                 }
