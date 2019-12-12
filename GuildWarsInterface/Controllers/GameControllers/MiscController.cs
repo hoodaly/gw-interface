@@ -8,6 +8,7 @@ using GuildWarsInterface.Declarations;
 using GuildWarsInterface.Logic;
 using GuildWarsInterface.Networking;
 using GuildWarsInterface.Networking.Protocol;
+using GuildWarsInterface.Networking.Servers;
 
 #endregion
 
@@ -58,7 +59,17 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                 private void ChangeMapHandler(List<object> objects)
                 {
-                        GameLogic.ChangeMap((Map) (ushort) objects[1]);
+                        Network.GameServer.Send(GameServerMessage.ShowOutpostOnWorldMap,
+                                                (ushort)objects[1],
+                                                (byte)0); //unknown
+                        GameLogic.ChangeMap((Map)(ushort)objects[1]);
+                }
+
+                private void CommitMapChangeHandler(List<object> objects)
+                {
+                        Network.GameServer.Disconnect();
+                        Network.GameServer.Start();
+                        Network.GameServer.ChangeMap();
                 }
         }
 }
