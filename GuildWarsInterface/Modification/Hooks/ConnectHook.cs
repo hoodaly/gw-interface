@@ -32,24 +32,16 @@ namespace GuildWarsInterface.Modification.Hooks
                 private static int Hook(uint socket, IntPtr addr, uint addrLen)
                 {
                         const short STANDARD_GAMESERVER_PORT = 9112;
-                        short sin_family = Marshal.ReadInt16(addr, 0);
-                        ushort sin_port = (ushort)Marshal.ReadInt16(addr, 2);
-                        byte ip0 = Marshal.ReadByte(addr, 4);
-                        byte ip1 = Marshal.ReadByte(addr, 5);
-                        byte ip2 = Marshal.ReadByte(addr, 6);
-                        byte ip3 = Marshal.ReadByte(addr, 7);
 
                         short port = Marshal.ReadInt16(addr + 2);
 
-                        Debug.Log("Connect " + GetHostByNameHook.LastHostName + " (" + socket + ", " + BigEndian(port) + "): " + sin_family + ", " + sin_port + ", " + ip0 + "." + ip1 + "." + ip2 + "." + ip3);
-
-                        if (BigEndian(port) != STANDARD_GAMESERVER_PORT && !(ip0 == 0x22 && ip1 == 0x22 && ip2 == 0x22 && ip3 == 0x22))
+                        if (BigEndian(port) != STANDARD_GAMESERVER_PORT)
                         {
-                                Marshal.WriteInt16(addr + 2, GetHostByNameHook.LastHostName.StartsWith("Auth") ? BigEndian(AuthServer.PORT) : BigEndian(FileServer.PORT));
+                                Marshal.WriteInt16(addr + 2, GetHostByNameHook.LastHostName.StartsWith("Auth") ? BigEndian((short)(AuthServer.PORT + Game.PortOffset)) : BigEndian((short)(FileServer.PORT + Game.PortOffset)));
                         }
                         else
                         {
-                                Marshal.WriteInt16(addr + 2, BigEndian(GameServer.PORT));
+                                Marshal.WriteInt16(addr + 2, BigEndian((short)(GameServer.PORT + Game.PortOffset)));
                         }
 
                         Marshal.WriteInt32(addr + 4, BitConverter.ToInt32(IPAddress.Loopback.GetAddressBytes(), 0));
