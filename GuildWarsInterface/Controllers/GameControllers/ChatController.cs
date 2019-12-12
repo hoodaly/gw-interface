@@ -1,4 +1,4 @@
-#region
+﻿#region
 
 using System.Collections.Generic;
 using GuildWarsInterface.Controllers.Base;
@@ -19,7 +19,7 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                 private void ChatHandler(List<object> objects)
                 {
-                        var totalMessage = (string) objects[1];
+                        var totalMessage = (string) objects[2];
 
                         var channel = (Chat.Channel) totalMessage[0];
 
