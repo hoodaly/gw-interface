@@ -1,4 +1,4 @@
-#region
+﻿#region
 
 using System.Collections.Generic;
 using GuildWarsInterface.Controllers.Base;
@@ -32,6 +32,7 @@ namespace GuildWarsInterface.Controllers.GameControllers
                         var plane = (short) (uint) objects[2];
 
                         Game.Player.Character.ShootProjectile(new Position(pos[0], pos[1], plane), 1F, 0x8F);
+                        Game.Player.Character.Transformation.SetGoal(pos[0], pos[1], plane);
                 }
 
                 private void KeyboardStopMovingHandler(List<object> objects)
