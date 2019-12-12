@@ -86,9 +86,15 @@ namespace GuildWarsInterface.Controllers.AuthControllers
 
                 private void Packet32Handler(List<object> objects)
                 {
-                        Network.AuthServer.TransactionCounter = (uint) objects[1];
+                        Network.AuthServer.TransactionCounter = (uint)objects[1];
 
                         Network.AuthServer.SendTransactionSuccessCode(TransactionSuccessCode.Success);
+                }
+
+                private void Packet35Handler(List<object> objects)
+                {
+
+                        Network.AuthServer.Send((AuthServerMessage)23, (ushort) 0);
                 }
 
                 private void PlayRequest(List<object> objects)
