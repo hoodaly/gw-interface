@@ -28,16 +28,16 @@ namespace GuildWarsInterface.Modification.Hooks
                 }
 
                 
-                public static List<int> searchAsm(byte[] target)
+                public static List<int> searchAsm(byte[] target, string mask = "")
                 {
                         List<int> output = new List<int>();
                         int cur = 0x00401000;
-                        int end = 0x00800000;
+                        int end = 0x011134af;
                         int idx = 0;
                         int chunkstart = cur;
                         while (cur < end)
                         {
-                                if (target[idx] == Marshal.ReadByte((IntPtr)cur))
+                                if (target[idx] == Marshal.ReadByte((IntPtr)cur) || (mask.Length == target.Length && mask[idx] == '?'))
                                 {
                                         if (idx == 0)
                                         {
