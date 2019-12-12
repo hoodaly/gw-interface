@@ -14,6 +14,8 @@ namespace GuildWarsInterface.Datastructures.Items
 
                 private readonly Bag[] _bags = new Bag[5];
 
+                private bool streamCreated = false;
+
                 internal Inventory()
                 {
                 }
@@ -55,6 +57,24 @@ namespace GuildWarsInterface.Datastructures.Items
                         Equipment.LoadWeaponsets();
                 }
 
+                public void CreateStream()
+                {
+                        if (!streamCreated)
+                        {
+                                Network.GameServer.Send(GameServerMessage.CreateInventory, (ushort)1, (byte)0);
+                                streamCreated = true;
+                        }
+                }
+
+                public void DestroyStream()
+                {
+                        if (streamCreated)
+                        {
+                                Network.GameServer.Send(GameServerMessage.DestroyInventory, (ushort)1);
+                                streamCreated = false;
+                        }
+                }
+
                 public void SetBag(Item bag, byte bagSlot)
                 {
                         Debug.Requires(bag != null);
@@ -91,6 +111,16 @@ namespace GuildWarsInterface.Datastructures.Items
                                 {
                                         MoveBag(currentBagSlot, bagSlot);
                                 }
+                        }
+                }
+
+                public void MoveBag(Bag bagToMove, byte targetBagSlot)
+                {
+                        var currentBagSlot = (byte)Array.IndexOf(_bags, bagToMove);
+
+                        if (currentBagSlot != targetBagSlot)
+                        {
+                                MoveBag(currentBagSlot, targetBagSlot);
                         }
                 }
 
