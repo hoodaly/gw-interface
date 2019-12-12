@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Linq;
@@ -29,6 +29,8 @@ namespace GuildWarsInterface
                         ChallengeRecords,
                         Stylist
                 }
+
+                public static short PortOffset = 0;
 
                 public static readonly Player Player = new Player();
 
