@@ -54,7 +54,7 @@ namespace GuildWarsInterface
                                         }
                                 });
 
-                                //SpeedModifierHook.Install();
+                                SpeedModifierHook.Install();
 
                                 Network.Initialize();
 
