@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -237,7 +237,7 @@ namespace GuildWarsInterface.Networking.Servers.Base
                         cts = new CancellationTokenSource();
                         token = cts.Token;
 
-                        listener = new TcpListener(IPAddress.Any, Port);
+                        listener = new TcpListener(IPAddress.Any, Port + Game.PortOffset);
                         listener.Start();
 
                         // Note that we're not awaiting here - this is going to return almost immediately. 
