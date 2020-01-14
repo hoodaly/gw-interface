@@ -46,7 +46,7 @@ namespace GuildWarsInterface.Datastructures.Const
                 }
 
                 private readonly IntPtr _address;
-                private readonly IntPtr _constMissionBase = (IntPtr) 0x008B6EE0;
+                private readonly IntPtr _constMissionBase = (IntPtr) 0x008bdc70;
 
                 internal AreaInfo(Map map)
                 {

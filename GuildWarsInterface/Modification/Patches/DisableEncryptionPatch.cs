@@ -14,14 +14,14 @@ namespace GuildWarsInterface.Modification.Patches
         {
                 public static void Apply()
                 {
-                        List<int> addrs = HookHelper.searchAsm(new byte[] { 0x89, 0x55, 0x10, 0x8B, 0x55, 0x08, 0x89, 0x55, 0x08, 0x46, 0x81, 0xE6, 0xFF, 0x00, 0x00, 0x00 });
+                        List<int> addrs = HookHelper.searchAsm(new byte[] { 0x32, 0x44, 0x0a, 0xff });
                         foreach(int addr in addrs)
                         {
-                                IntPtr location = (IntPtr)(addr + 0x41);
+                                IntPtr location = (IntPtr) addr;
                                 uint dwOldProtection;
-                                Kernel32.VirtualProtect(location, 5, 0x40, out dwOldProtection);
-                                Marshal.Copy(new byte[] {0x8A, 0x14, 0x18}, 0, location, 3);
-                                Kernel32.VirtualProtect(location, 5, dwOldProtection, out dwOldProtection);
+                                Kernel32.VirtualProtect(location, 1, 0x40, out dwOldProtection);
+                                Marshal.WriteByte(location, 0x8a);
+                                Kernel32.VirtualProtect(location, 1, dwOldProtection, out dwOldProtection);
                         }
                 }
         }

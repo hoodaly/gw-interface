@@ -1,8 +1,10 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Binarysharp.Assemblers.Fasm;
+using GuildWarsInterface.Debugging;
 
 #endregion
 
@@ -12,8 +14,11 @@ namespace GuildWarsInterface.Modification.Hooks
         {
                 internal static void Install(HookType hook)
                 {
-
-                        var hookLocation = new IntPtr(0x00595ec0);
+                        // 8b f0 83 c4 08 8b 45 14
+                        List<int> addrs = HookHelper.searchAsm(new byte[] { 0x8b, 0xf0, 0x83, 0xc4, 0x08, 0x8b, 0x45, 0x14 });
+                        Debug.Requires(addrs.Count == 1);
+                        int addrStart = addrs[0];
+                        var hookLocation = new IntPtr(addrStart);
 
                         IntPtr codeCave = Marshal.AllocHGlobal(128);
 
@@ -21,12 +26,13 @@ namespace GuildWarsInterface.Modification.Hooks
                                 {
                                         "use32",
                                         "org " + codeCave,
-                                        "call 0x00596570",
                                         "pushad",
-                                        "push edi",
+                                        "push dword[ebp+8]",
                                         "push eax",
                                         "call " + Marshal.GetFunctionPointerForDelegate(hook),
                                         "popad",
+                                        "mov esi,eax",  //instruction from original
+                                        "add esp,8", //instruction from original
                                         "jmp " + (hookLocation + 5)
                                 });
                         Marshal.Copy(code, 0, codeCave, code.Length);
@@ -35,9 +41,11 @@ namespace GuildWarsInterface.Modification.Hooks
                 }
                 internal static void Install2(HookType hook)
                 {
-                        
-
-                        var hookLocation = new IntPtr(0x005953a5);
+                        // 83 c4 08 89 46 18
+                        List<int> addrs = HookHelper.searchAsm(new byte[] { 0x83, 0xc4, 0x08, 0x89, 0x46, 0x18 });
+                        Debug.Requires(addrs.Count == 1);
+                        int addrStart = addrs[0];
+                        var hookLocation = new IntPtr(addrStart);
 
                         IntPtr codeCave = Marshal.AllocHGlobal(128);
                         
@@ -46,11 +54,12 @@ namespace GuildWarsInterface.Modification.Hooks
                                         "use32",
                                         "org " + codeCave,
                                         "pushad",
-                                        "push edx",
-                                        "push edx",
+                                        "push dword[ebp+8]",
+                                        "push dword[ebp+8]",
                                         "call " + Marshal.GetFunctionPointerForDelegate(hook),
                                         "popad",
-                                        "call 0x595e10",
+                                        "add esp,8",  //instruction from original
+                                        "mov dword[esi+0x18],eax", //instruction from original
                                         "jmp " + (hookLocation + 5)
                                 });
                         Marshal.Copy(code, 0, codeCave, code.Length);

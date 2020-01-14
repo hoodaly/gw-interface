@@ -12,8 +12,7 @@ namespace GuildWarsInterface.Modification.Hooks
         {
                 internal static void Install(HookType hook)
                 {
-
-                        var hookLocation = new IntPtr(0x00595ec0);
+                        var hookLocation = new IntPtr(0x0081c8a0);
                         IntPtr codeCave = Marshal.AllocHGlobal(128);
                         byte[] code = FasmNet.Assemble(new[]
                                 {

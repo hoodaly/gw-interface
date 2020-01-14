@@ -36,7 +36,8 @@ namespace GuildWarsInterface.Modification.Hooks
 
                 internal static void Install()
                 {
-                        List<int> addrs = HookHelper.searchAsm(new byte[] { 0x8b, 0x1c, 0x88, 0x85, 0xdb, 0x75, 0x14, 0x68, 0x2d, 0x04, 0x00, 0x00 });
+                        // 8b 34 b0 85 f6 75 14 68 2d 04 00 00
+                        List<int> addrs = HookHelper.searchAsm(new byte[] { 0x8b, 0x34, 0xb0, 0x85, 0xf6, 0x75, 0x14, 0x68, 0x2d, 0x04, 0x00, 0x00 });
                         Debug.Requires(addrs.Count == 1);
                         var hookLocation = new IntPtr(addrs[0]);
 
@@ -48,10 +49,10 @@ namespace GuildWarsInterface.Modification.Hooks
                                 {
                                         "use32",
                                         "org " + codeCave,
-                                        "mov ebx, dword[ecx*0x4+eax]",
-                                        "mov dword[" + _speedModifierLocation + "], ebx",
-                                        "mov dword[" + _db8Location + "], esi",
-                                        "test ebx, ebx",
+                                        "mov esi, dword[esi*0x4+eax]", //instruction from original
+                                        "mov dword[" + _speedModifierLocation + "], esi",
+                                        "mov dword[" + _db8Location + "], ebx",
+                                        "test esi, esi", //instruction from original
                                         "jmp " + (hookLocation + 5)
                                 });
                         Marshal.Copy(code, 0, codeCave, code.Length);

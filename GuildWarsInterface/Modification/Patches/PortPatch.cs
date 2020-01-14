@@ -17,14 +17,10 @@ namespace GuildWarsInterface.Modification.Patches
 
         public static void Apply()
         {
-                List<int> addrs = HookHelper.searchAsm(new byte[] { 0x8D, 0x53, 0x3c, 0x89, 0x7e, 0x08 });
+                List<int> addrs = HookHelper.searchAsm(new byte[] { 0x66, 0x89, 0x46, 0x02, 0x5e, 0xc3, 0xcc });
                 foreach (int addr in addrs)
                 {
-                        IntPtr x = (IntPtr) addr + 7;
-                        int Fun_offset = Marshal.ReadInt32(x);
-
-                        IntPtr PortFixLoc = x + Fun_offset + 4;
-                        PortFixLoc += 10;
+                        IntPtr PortFixLoc = (IntPtr)addr + 1;
                         uint dwOldProtection;
                         Kernel32.VirtualProtect(PortFixLoc, 1, 0x40, out dwOldProtection);
                         Marshal.WriteByte(PortFixLoc, 0x8B);

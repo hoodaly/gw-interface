@@ -2,6 +2,7 @@
 
 using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using GuildWarsInterface.Debugging;
@@ -17,7 +18,7 @@ namespace GuildWarsInterface.Modification.Hooks
                 private static HookType _hookDelegate;
                 private static HookType _originalDelegate;
 
-                private static readonly IntPtr _hookAddress = (IntPtr) 0x00403DDE;
+                private static readonly IntPtr _hookAddress = (IntPtr) 0x005a9663;
 
                 public static void Install()
                 {
@@ -32,14 +33,15 @@ namespace GuildWarsInterface.Modification.Hooks
 
                 private static int Hook(uint socket, IntPtr buf, int len, int flags)
                 {
-                        string str = Marshal.PtrToStringUni(buf, len);
                         byte[] bs = new byte[len];
                         for (int i = 0; i < len; i++)
                         {
                                 bs[i] = Marshal.ReadByte(buf, i);
                         }
                         //byte[] bytes = Encoding.GetEncoding("UTF-8").GetBytes(str);
-                        Debug.LogBytes(bs, "Send (" + socket.ToString() + "): ");
+                        if (!(bs[0] == 0 && (bs[1] == 0 || bs[1] == 0x80))) {
+                                Debug.LogBytes(bs, "Send (" + socket.ToString() + "): ");
+                        }
                         
                         return _originalDelegate(socket, buf, len, flags);
                 }
