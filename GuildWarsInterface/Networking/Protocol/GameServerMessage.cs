@@ -1,4 +1,4 @@
-﻿namespace GuildWarsInterface.Networking.Protocol
+namespace GuildWarsInterface.Networking.Protocol
 {
         internal enum GameServerMessage
         {
@@ -14,6 +14,7 @@
                 MovementSpeed = 44,//32,
                 UpdateAgentPosition = 45,//33,
                 AgentRotation = 47,//35,
+                Attack = 54,//42,
                 SetAttributePoints = 56,//44,
                 UpdateAttributePoints1 = 57,//45,
                 UpdateAttributePoints2 = 58,//46,
