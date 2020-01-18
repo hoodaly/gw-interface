@@ -38,7 +38,7 @@ namespace GuildWarsInterface.Controllers.GameControllers
                         Game.Player.Character.Inventory.SetItem(item, Game.Player.Character.Inventory.Backpack, 0);
                         Game.Player.Character.Inventory.LoadItems();
 
-                        Network.GameServer.Send(GameServerMessage.ConnectionStatus, (byte) 0, (ushort) 0x160, 0x85EB21CD);
+                        Network.GameServer.Send(GameServerMessage.ConnectionStatus, (byte)0, (ushort)Game.Zone.Map, 0);
                 }
 
                 private void InstanceLoadRequestMapDataHandler(List<object> objects)
