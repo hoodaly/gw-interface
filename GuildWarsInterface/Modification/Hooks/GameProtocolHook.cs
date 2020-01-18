@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Binarysharp.Assemblers.Fasm;
 using GuildWarsInterface.Debugging;
+using GuildWarsInterface.Modification.Native;
 
 #endregion
 
@@ -20,12 +21,7 @@ namespace GuildWarsInterface.Modification.Hooks
                         int addrStart = addrs[0];
                         var hookLocation = new IntPtr(addrStart);
 
-                        IntPtr codeCave = Marshal.AllocHGlobal(128);
-
-                        byte[] code = FasmNet.Assemble(new[]
-                                {
-                                        "use32",
-                                        "org " + codeCave,
+                        IntPtr codeCave = HookHelper.MakeCodeCave(new[] {
                                         "pushad",
                                         "push dword[ebp+8]",
                                         "push eax",
@@ -35,7 +31,6 @@ namespace GuildWarsInterface.Modification.Hooks
                                         "add esp,8", //instruction from original
                                         "jmp " + (hookLocation + 5)
                                 });
-                        Marshal.Copy(code, 0, codeCave, code.Length);
 
                         HookHelper.Jump(hookLocation, codeCave);
                 }
@@ -47,12 +42,7 @@ namespace GuildWarsInterface.Modification.Hooks
                         int addrStart = addrs[0];
                         var hookLocation = new IntPtr(addrStart);
 
-                        IntPtr codeCave = Marshal.AllocHGlobal(128);
-                        
-                        byte[] code = FasmNet.Assemble(new[]
-                                {
-                                        "use32",
-                                        "org " + codeCave,
+                        IntPtr codeCave = HookHelper.MakeCodeCave(new[] {
                                         "pushad",
                                         "push dword[ebp+8]",
                                         "push dword[ebp+8]",
@@ -60,10 +50,8 @@ namespace GuildWarsInterface.Modification.Hooks
                                         "popad",
                                         "add esp,8",  //instruction from original
                                         "mov dword[esi+0x18],eax", //instruction from original
-                                        "jmp " + (hookLocation + 5)
+                                        "jmp " + (hookLocation + 6)
                                 });
-                        Marshal.Copy(code, 0, codeCave, code.Length);
-
                         HookHelper.Jump(hookLocation, codeCave);
                 }
 

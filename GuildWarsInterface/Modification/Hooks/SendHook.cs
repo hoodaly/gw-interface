@@ -18,13 +18,14 @@ namespace GuildWarsInterface.Modification.Hooks
                 private static HookType _hookDelegate;
                 private static HookType _originalDelegate;
 
-                private static readonly IntPtr _hookAddress = (IntPtr) 0x005a9663;
+                private static IntPtr _hookAddress;
 
                 public static void Install()
                 {
                         _hookDelegate = Hook;
 
                         IntPtr addr = Kernel32.GetProcAddress(Kernel32.GetModuleHandle("ws2_32.dll"), "send");
+                        _hookAddress = HookHelper.GetThunkLocation("ws2_32.dll", "send");
 
                         _originalDelegate = (HookType) Marshal.GetDelegateForFunctionPointer(addr, typeof (HookType));
 

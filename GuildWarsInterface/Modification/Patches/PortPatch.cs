@@ -12,9 +12,6 @@ namespace GuildWarsInterface.Modification.Patches
 {
     internal static class PortPatch
     {
-        // loc of 8D533c897e08
-        private static readonly IntPtr _location = (IntPtr) 0x0040a950;
-
         public static void Apply()
         {
                 List<int> addrs = HookHelper.searchAsm(new byte[] { 0x66, 0x89, 0x46, 0x02, 0x5e, 0xc3, 0xcc });

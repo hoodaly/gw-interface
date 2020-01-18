@@ -41,22 +41,16 @@ namespace GuildWarsInterface.Modification.Hooks
                         Debug.Requires(addrs.Count == 1);
                         var hookLocation = new IntPtr(addrs[0]);
 
-                        IntPtr codeCave = Marshal.AllocHGlobal(128);
                         _speedModifierLocation = Marshal.AllocHGlobal(4);
                         _db8Location = Marshal.AllocHGlobal(4);
 
-                        byte[] code = FasmNet.Assemble(new[]
-                                {
-                                        "use32",
-                                        "org " + codeCave,
+                        IntPtr codeCave = HookHelper.MakeCodeCave(new[] {
                                         "mov esi, dword[esi*0x4+eax]", //instruction from original
                                         "mov dword[" + _speedModifierLocation + "], esi",
                                         "mov dword[" + _db8Location + "], ebx",
                                         "test esi, esi", //instruction from original
                                         "jmp " + (hookLocation + 5)
                                 });
-                        Marshal.Copy(code, 0, codeCave, code.Length);
-
                         HookHelper.Jump(hookLocation, codeCave);
                 }
         }

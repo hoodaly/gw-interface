@@ -23,29 +23,16 @@ namespace GuildWarsInterface.Modification.Hooks
 
                         IntPtr codeCave2 = Marshal.AllocHGlobal(4);
 
-                        IntPtr codeCave1 = Marshal.AllocHGlobal(128);
-
-                        byte[] code1 = FasmNet.Assemble(new[]
-                                {
-                                        "use32",
-                                        "org " + codeCave1,
+                        IntPtr codeCave1 = HookHelper.MakeCodeCave(new[] {
                                         "mov eax, dword[esi+0x10]", //eax will be overwritten soon
                                         "mov dword[" + codeCave2 + "],eax", //store value in codeCave
                                         "mov dword[ebp-0x18],ecx", //instruction from original (89 4d e8)
                                         "mov eax,dword[esi+0x78]", //instruction from original (8b 46 78)
                                         "jmp " + (hookLocation1 + 6)
                                 });
-                        Marshal.Copy(code1, 0, codeCave1, code1.Length);
-
                         HookHelper.Jump(hookLocation1, codeCave1);
 
-
-                        IntPtr codeCave = Marshal.AllocHGlobal(128);
-
-                        byte[] code = FasmNet.Assemble(new[]
-                                {
-                                        "use32",
-                                        "org " + codeCave,
+                        IntPtr codeCave = HookHelper.MakeCodeCave(new[] {
                                         "push dword [ebp+0x8]", //id parameter
                                         "push dword [" + codeCave2 + "]",
                                         "call " + Marshal.GetFunctionPointerForDelegate(hook),
@@ -54,8 +41,6 @@ namespace GuildWarsInterface.Modification.Hooks
                                         "pop ebp",
                                         "retn 8"
                                 });
-                        Marshal.Copy(code, 0, codeCave, code.Length);
-
                         HookHelper.Jump(hookLocation, codeCave);
                 }
 

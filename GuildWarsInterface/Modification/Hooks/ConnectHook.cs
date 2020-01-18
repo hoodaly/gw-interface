@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Net;
@@ -16,13 +16,14 @@ namespace GuildWarsInterface.Modification.Hooks
                 private static HookType _hookDelegate;
                 private static HookType _originalDelegate;
 
-                private static readonly IntPtr _hookAddress = (IntPtr) 0x005a964b;
+                private static IntPtr _hookAddress;
 
                 public static void Install()
                 {
                         _hookDelegate = Hook;
 
                         IntPtr addr = Kernel32.GetProcAddress(Kernel32.GetModuleHandle("ws2_32.dll"), "connect");
+                        _hookAddress = HookHelper.GetThunkLocation("ws2_32.dll", "connect");
 
                         _originalDelegate = (HookType) Marshal.GetDelegateForFunctionPointer(addr, typeof (HookType));
 
