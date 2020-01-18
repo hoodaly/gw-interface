@@ -1,4 +1,4 @@
-﻿namespace GuildWarsInterface.Networking.Protocol
+namespace GuildWarsInterface.Networking.Protocol
 {
         internal enum GameClientMessage
         {
@@ -28,6 +28,13 @@
                 InstanceLoadRequestMapData = 142,
                 InstanceLoadRequestPlayerData = 151,
                 InstanceLoadRequestItems = 152,
+                EnterFight = 172,
+                AcceptJoin = 163,//150, //controllerManager.RegisterHandler(150, AcceptJoinRequestHandler);
+                KickInvite = 164,//151, //controllerManager.RegisterHandler(151, KickInviteHandler);
+                KickJoinRequest = 165,//152, //controllerManager.RegisterHandler(152, KickJoinRequestHandler);
+                Invite = 167,//154, //controllerManager.RegisterHandler(154, InviteHandler);
+                Leave = 169,//156, //controllerManager.RegisterHandler(156, LeaveHandler);
+                KickMember = 176,//163, //controllerManager.RegisterHandler(163, KickMemberHandler);*/
                 ChangeMap = 184,//171,
         }
 }

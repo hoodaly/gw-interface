@@ -9,6 +9,7 @@ using GuildWarsInterface.Datastructures.Agents;
 using GuildWarsInterface.Debugging;
 using GuildWarsInterface.Logic;
 using GuildWarsInterface.Misc;
+using GuildWarsInterface.Networking.Protocol;
 
 #endregion
 
@@ -18,12 +19,12 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        /*controllerManager.RegisterHandler(150, AcceptJoinRequestHandler);
-                        controllerManager.RegisterHandler(151, KickInviteHandler);
-                        controllerManager.RegisterHandler(152, KickJoinRequestHandler);
-                        controllerManager.RegisterHandler(154, InviteHandler);
-                        controllerManager.RegisterHandler(156, LeaveHandler);
-                        controllerManager.RegisterHandler(163, KickMemberHandler);*/
+                        controllerManager.RegisterHandler((int)GameClientMessage.AcceptJoin, AcceptJoinRequestHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.KickInvite, KickInviteHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.KickJoinRequest, KickJoinRequestHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.Invite, InviteHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.Leave, LeaveHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.KickMember, KickMemberHandler);
                 }
 
                 private void KickMemberHandler(List<object> objects)
