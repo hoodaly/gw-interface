@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using GuildWarsInterface.Declarations;
+using GuildWarsInterface.Modification.Hooks;
 using GuildWarsInterface.Modification.Native;
 
 namespace GuildWarsInterface.Datastructures.Const
@@ -46,7 +47,7 @@ namespace GuildWarsInterface.Datastructures.Const
                 }
 
                 private readonly IntPtr _address;
-                private readonly IntPtr _constMissionBase = (IntPtr) 0x008bdc70;
+                private readonly IntPtr _constMissionBase = HookHelper.reloc((IntPtr) 0x008bdd28);
 
                 internal AreaInfo(Map map)
                 {
@@ -91,7 +92,7 @@ namespace GuildWarsInterface.Datastructures.Const
 
                 public AreaFlags Flags
                 {
-                        get { return (AreaFlags) ReadInt(0x10); }
+                        get { return (AreaFlags)ReadInt(0x10); }
                         set { WriteInt(0x10, (int) value); }
                 }
 
