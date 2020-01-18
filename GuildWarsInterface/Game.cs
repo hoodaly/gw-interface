@@ -83,6 +83,8 @@ namespace GuildWarsInterface
                         if (State == GameState.Playing) State = GameState.ChangingMap;
 
                         var newZone = new Zone(map);
+                        initialization(newZone);
+                        Zone = newZone;
 
                         if (State == GameState.CharacterScreen)
                         {
@@ -121,10 +123,6 @@ namespace GuildWarsInterface
                         {
                                 Debug.ThrowException(new Exception("cannot change zone in gamestate " + State));
                         }
-
-                        initialization(newZone);
-
-                        Zone = newZone;
                 }
 
                 public static void TimePassed(uint milliseconds)
