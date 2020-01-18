@@ -39,6 +39,11 @@ namespace GuildWarsInterface.Datastructures
                         get { return _members.ToArray(); }
                 }
 
+                public Party[] Invites
+                {
+                        get { return _invites.ToArray(); }
+                }
+
                 protected override void OnCreation()
                 {
                         Network.GameServer.Send(GameServerMessage.CreateParty1, IdManager.GetId(this));
