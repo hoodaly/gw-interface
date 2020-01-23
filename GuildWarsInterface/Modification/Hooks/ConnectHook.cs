@@ -35,14 +35,24 @@ namespace GuildWarsInterface.Modification.Hooks
                         const short STANDARD_GAMESERVER_PORT = 9112;
 
                         short port = Marshal.ReadInt16(addr + 2);
+                        byte srv_id = Marshal.ReadByte(addr + 4);
 
                         if (BigEndian(port) != STANDARD_GAMESERVER_PORT)
+                        switch (srv_id)
                         {
-                                Marshal.WriteInt16(addr + 2, GetHostByNameHook.LastHostName.StartsWith("Auth") ? BigEndian((short)(AuthServer.PORT + Game.PortOffset)) : BigEndian((short)(FileServer.PORT + Game.PortOffset)));
-                        }
-                        else
-                        {
-                                Marshal.WriteInt16(addr + 2, BigEndian((short)(GameServer.PORT + Game.PortOffset)));
+                                case 0x12:
+                                        Marshal.WriteInt16(addr + 2, BigEndian((short)(AuthServer.PORT + Game.PortOffset)));
+                                        break;
+                                case 0x13:
+                                        Marshal.WriteInt16(addr + 2, BigEndian((short)(FileServer.PORT + Game.PortOffset)));
+                                        break;
+                                case 0x14:
+                                        // Don't connect other fileservers
+                                        return -1;
+                                default:
+                                        //game server
+                                        Marshal.WriteInt16(addr + 2, BigEndian((short)(GameServer.PORT + Game.PortOffset)));
+                                        break;
                         }
 
                         Marshal.WriteInt32(addr + 4, BitConverter.ToInt32(IPAddress.Loopback.GetAddressBytes(), 0));
