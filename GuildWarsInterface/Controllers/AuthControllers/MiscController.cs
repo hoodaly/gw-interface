@@ -1,4 +1,4 @@
-#region
+﻿#region
 
 using System;
 using System.Collections.Generic;
@@ -39,7 +39,7 @@ namespace GuildWarsInterface.Controllers.AuthControllers
 
                 private void MoveFriendListEntryHandler(List<object> objects)
                 {
-                        bool success = AuthLogic.MoveFriend((string)objects[3], (FriendList.Type)(uint)objects[2]);
+                        bool success = AuthLogic.MoveFriend(new Guid((byte[])objects[3]), (FriendList.Type)(uint)objects[2]);
 
                         Network.AuthServer.TransactionCounter = (uint) objects[1];
                         Network.AuthServer.SendTransactionSuccessCode(success ? TransactionSuccessCode.Success : TransactionSuccessCode.Aborted);

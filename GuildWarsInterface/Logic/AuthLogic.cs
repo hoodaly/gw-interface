@@ -14,7 +14,7 @@ namespace GuildWarsInterface.Logic
 
                 public delegate bool AddFriendHandler(FriendList.Type type, string baseCharacterName, string currentCharacterName);
 
-                public delegate bool MoveFriendHandler(string baseCharacterName, FriendList.Type target);
+                public delegate bool MoveFriendHandler(Guid friendAccountGuid, FriendList.Type target);
                 public delegate bool DeleteCharacterHandler(PlayerCharacter character);
 
                 public static LoginLogicHandler Login = (email, password, character) => true;
@@ -32,7 +32,7 @@ namespace GuildWarsInterface.Logic
 
                 public static AddFriendHandler AddFriend = (type, baseCharacterName, currentCharacterName) =>
                         {
-                                Game.Player.FriendList.Add(type, baseCharacterName, currentCharacterName);
+                                Game.Player.FriendList.Add(type, Guid.Empty, baseCharacterName, currentCharacterName);
                                 return true;
                         };
 
