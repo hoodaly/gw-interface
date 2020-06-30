@@ -65,31 +65,28 @@ namespace GuildWarsInterface.Controllers.GameControllers
                                                         (byte)0); //unknown
                         }
 
-                private void InstanceLoadRequestPlayerDataHandler(List<object> objects)
-                {
-
-                        Network.GameServer.Send(GameServerMessage.PlayerData230, 1886151033);
+                        Network.GameServer.Send(GameServerMessage.PlayerData230, 1886151033); // 1886151033=play
 
                         Game.Player.Abilities.LoadAbilities1();
 
                         Game.Player.Character.SkillBar.SendUpdateSkillBarPacket();
 
                         Network.GameServer.Send(GameServerMessage.PlayerData221,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
+                                                540087, //experience
+                                                16920, //kurzickFree
+                                                353966, //kurzickTotal
+                                                20, //luxonTotal
+                                                4186028, //luxonFree
+                                                0, //imperialFree
+                                                0, //imperialTotal
+                                                19, //unknown
+                                                23, //unknown
                                                 (uint) Game.Player.Character.Level,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0);
+                                                100, //morale
+                                                1900, //balthFree
+                                                601665, //balthTotal
+                                                38, //skillFree
+                                                88); //skillTotal
 
 
                         Game.Player.Character.Create();
@@ -154,6 +151,8 @@ namespace GuildWarsInterface.Controllers.GameControllers
                         Game.Zone.CreateParties();
 
                         Game.State = GameState.Playing;
+                        // Send pending Transaction success
+                        //Network.AuthServer.SendTransactionSuccessCode(TransactionSuccessCode.Success);
 
                         LoadingComplete();
                 }
