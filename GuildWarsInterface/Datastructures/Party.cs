@@ -46,9 +46,9 @@ namespace GuildWarsInterface.Datastructures
 
                 protected override void OnCreation()
                 {
-                        Network.GameServer.Send(GameServerMessage.CreateParty1, IdManager.GetId(this));
+                        Network.GameServer.Send(GameServerMessage.CreateParty, IdManager.GetId(this));
                         Network.GameServer.Send(GameServerMessage.AddPartyMember, IdManager.GetId(this), (ushort) IdManager.GetId(Leader), (byte) 1);
-                        Network.GameServer.Send(GameServerMessage.CreateParty2, IdManager.GetId(this));
+                        Network.GameServer.Send(GameServerMessage.CreatePartyStreamEnd, IdManager.GetId(this));
                 }
 
                 protected override void OnDestruction()
