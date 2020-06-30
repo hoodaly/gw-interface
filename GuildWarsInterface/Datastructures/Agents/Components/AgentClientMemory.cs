@@ -1,8 +1,10 @@
 ﻿#region
 
 using System;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using GuildWarsInterface.Misc;
+using GuildWarsInterface.Modification.Hooks;
 
 #endregion
 
@@ -11,7 +13,7 @@ namespace GuildWarsInterface.Datastructures.Agents.Components
         public sealed class AgentClientMemory
         {
                 private readonly Agent _agent;
-                private readonly IntPtr _agentBase = (IntPtr) 0x00D55A20;
+                private readonly IntPtr _db8location = SpeedModifierHook.DB8Location();
 
                 public AgentClientMemory(Agent agent)
                 {
@@ -20,13 +22,14 @@ namespace GuildWarsInterface.Datastructures.Agents.Components
 
                 private IntPtr ClientMemoryBase
                 {
+                        [HandleProcessCorruptedStateExceptions]
                         get
                         {
                                 try
                                 {
-                                        return Marshal.ReadIntPtr(Marshal.ReadIntPtr(_agentBase) + (int) (4 * IdManager.GetId(_agent)));
+                                        return Marshal.ReadIntPtr(Marshal.ReadIntPtr(Marshal.ReadIntPtr(_db8location) + 0xe8) + (int) (4 * IdManager.GetId(_agent))) + 4;
                                 }
-                                catch (Exception)
+                                catch (AccessViolationException)
                                 {
                                         return IntPtr.Zero;
                                 }
@@ -46,13 +49,14 @@ namespace GuildWarsInterface.Datastructures.Agents.Components
 
                 public short Plane
                 {
+                        [HandleProcessCorruptedStateExceptions]
                         get
                         {
                                 try
                                 {
                                         return Marshal.ReadInt16(ClientMemoryBase + 0x5C);
                                 }
-                                catch (Exception)
+                                catch (AccessViolationException)
                                 {
                                         return 0;
                                 }
@@ -61,58 +65,62 @@ namespace GuildWarsInterface.Datastructures.Agents.Components
 
                 public float X
                 {
+                        [HandleProcessCorruptedStateExceptions]
                         get
                         {
                                 try
                                 {
                                         return BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(ClientMemoryBase + 116)), 0);
                                 }
-                                catch (Exception)
+                                catch (AccessViolationException)
                                 {
                                         return 0;
                                 }
                         }
                 }
-
+                
                 public float Y
                 {
+                        [HandleProcessCorruptedStateExceptions]
                         get
                         {
                                 try
                                 {
                                         return BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(ClientMemoryBase + 120)), 0);
                                 }
-                                catch (Exception)
+                                catch (AccessViolationException)
                                 {
                                         return 0;
                                 }
                         }
                 }
-
+                
                 public float MoveX
                 {
+                        [HandleProcessCorruptedStateExceptions]
                         get
                         {
                                 try
                                 {
                                         return BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(ClientMemoryBase + 160)), 0);
                                 }
-                                catch (Exception)
+                                catch (AccessViolationException)
                                 {
                                         return 0;
                                 }
                         }
                 }
-
+                
                 public float MoveY
                 {
+                        [HandleProcessCorruptedStateExceptions]
                         get
                         {
                                 try
                                 {
                                         return BitConverter.ToSingle(BitConverter.GetBytes(Marshal.ReadInt32(ClientMemoryBase + 164)), 0);
                                 }
-                                catch (Exception)
+                                catch (AccessViolationException)
                                 {
                                         return 0;
                                 }

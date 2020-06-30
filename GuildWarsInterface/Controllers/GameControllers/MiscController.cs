@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using GuildWarsInterface.Declarations;
 using GuildWarsInterface.Logic;
 using GuildWarsInterface.Networking;
 using GuildWarsInterface.Networking.Protocol;
+using GuildWarsInterface.Networking.Servers;
 
 #endregion
 
@@ -17,10 +18,11 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(2, ExitToCharacterScreenHandler);
-                        controllerManager.RegisterHandler(3, ExitToLoginScreenHandler);
-                        controllerManager.RegisterHandler(171, ChangeMapHandler);
-                        controllerManager.RegisterHandler(78, StylistChangeAppearanceHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.ExitToCharacterScreen, ExitToCharacterScreenHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.ExitToLoginScreen, ExitToLoginScreenHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.CommitMapChange, CommitMapChangeHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.ChangeMap, ChangeMapHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.StylistChangeAppearance, StylistChangeAppearanceHandler);
                 }
 
                 private void StylistChangeAppearanceHandler(List<object> objects)
@@ -29,7 +31,10 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                         Network.GameServer.Send(GameServerMessage.AccountCurrency, (ushort) 101, (ushort) 1, (ushort) 0);
                         Network.GameServer.Send(GameServerMessage.AccountCurrency, (ushort) 102, (ushort) 1, (ushort) 0);
-                        Network.GameServer.Send(GameServerMessage.OpenWindow, 0, (byte) 3, 0);
+                        Network.GameServer.Send(GameServerMessage.OpenWindow,
+                                0, //agent
+                                (byte) 3, //windowType
+                                0); //data
 
                         Console.WriteLine(Game.Player.Character.Appearance);
                 }
@@ -54,7 +59,17 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                 private void ChangeMapHandler(List<object> objects)
                 {
-                        GameLogic.ChangeMap((Map) (ushort) objects[1]);
+                        Network.GameServer.Send(GameServerMessage.ShowOutpostOnWorldMap,
+                                                (ushort)objects[1],
+                                                (byte)0); //unknown
+                        GameLogic.ChangeMap((Map)(ushort)objects[1]);
+                }
+
+                private void CommitMapChangeHandler(List<object> objects)
+                {
+                        Network.GameServer.Disconnect();
+                        Network.GameServer.Start();
+                        Network.GameServer.ChangeMap();
                 }
         }
 }

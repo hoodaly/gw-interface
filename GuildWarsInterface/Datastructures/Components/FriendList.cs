@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GuildWarsInterface.Declarations;
 using GuildWarsInterface.Networking;
@@ -15,7 +16,7 @@ namespace GuildWarsInterface.Datastructures.Components
                         Ignored
                 }
 
-                private readonly Dictionary<string, Entry> _entries = new Dictionary<string, Entry>();
+                private readonly Dictionary<Guid, Entry> _entries = new Dictionary<Guid, Entry>();
 
                 public IEnumerable<Entry> Entries
                 {
@@ -32,19 +33,19 @@ namespace GuildWarsInterface.Datastructures.Components
                         get { return Entries.Where(entry => entry.Type == Type.Ignored); }
                 }
 
-                public void Add(Type type, string baseCharacterName, string currentCharacterName = "", PlayerStatus playerStatus = PlayerStatus.Offline, Map map = 0)
+                public void Add(Type type, Guid friendAccountGuid, string baseCharacterName, string currentCharacterName = "", PlayerStatus playerStatus = PlayerStatus.Offline, Map map = 0)
                 {
                         lock (this)
                         {
-                                var newEntry = new Entry(type, baseCharacterName, currentCharacterName, playerStatus, map);
+                                var newEntry = new Entry(type, friendAccountGuid, baseCharacterName, currentCharacterName, playerStatus, map);
 
-                                if (!_entries.ContainsKey(newEntry.BaseCharacterName))
+                                if (!_entries.ContainsKey(newEntry.FriendAccountGuid))
                                 {
-                                        _entries.Add(newEntry.BaseCharacterName, newEntry);
+                                        _entries.Add(newEntry.FriendAccountGuid, newEntry);
                                 }
                                 else
                                 {
-                                        _entries[newEntry.BaseCharacterName] = newEntry;
+                                        _entries[newEntry.FriendAccountGuid] = newEntry;
                                 }
 
                                 if (Game.State == GameState.Playing)
@@ -54,40 +55,40 @@ namespace GuildWarsInterface.Datastructures.Components
                         }
                 }
 
-                public void Remove(string baseCharacterName)
+                public void Remove(Guid friendAccountGuid)
                 {
                         lock (this)
                         {
-                                if (_entries.ContainsKey(baseCharacterName))
+                                if (_entries.ContainsKey(friendAccountGuid))
                                 {
-                                        _entries.Remove(baseCharacterName);
+                                        _entries.Remove(friendAccountGuid);
                                 }
                         }
                 }
 
-                public void Move(string baseCharacterName, Type target)
+                public void Move(Guid friendAccountGuid, Type target)
                 {
                         lock (this)
                         {
                                 if (target == Type.None)
                                 {
-                                        Remove(baseCharacterName);
+                                        Remove(friendAccountGuid);
                                 }
-                                else if (_entries.ContainsKey(baseCharacterName))
+                                else if (_entries.ContainsKey(friendAccountGuid))
                                 {
-                                        _entries[baseCharacterName].Type = target;
+                                        _entries[friendAccountGuid].Type = target;
                                 }
                         }
                 }
 
                 private static void InitEntry(Entry entry)
                 {
-                        Network.AuthServer.Send(AuthServerMessage.FriendList, Network.AuthServer.TransactionCounter, (uint) entry.Type, entry.BaseCharacterName);
+                        Network.AuthServer.Send(AuthServerMessage.FriendList, Network.AuthServer.TransactionCounter, (uint)entry.Type, entry.FriendAccountGuid.ToByteArray(), entry.BaseCharacterName);
                 }
 
                 private static void UpdateEntry(Entry entry)
                 {
-                        Network.AuthServer.Send(AuthServerMessage.UpdateFriendList, (uint) entry.PlayerStatus, entry.BaseCharacterName, entry.CurrentCharacterName);
+                        Network.AuthServer.Send(AuthServerMessage.UpdateFriendList, (uint) entry.PlayerStatus, entry.FriendAccountGuid.ToByteArray(), entry.BaseCharacterName, entry.CurrentCharacterName);
 
                         //If a map was specified, show it next to name
                         if (entry.Map != 0)
@@ -110,19 +111,21 @@ namespace GuildWarsInterface.Datastructures.Components
 
                 public void Clear()
                 {
-                        Entries.ToList().ForEach(e => Remove(e.BaseCharacterName));
+                        Entries.ToList().ForEach(e => Remove(e.FriendAccountGuid));
                 }
 
                 public sealed class Entry
                 {
                         public readonly string BaseCharacterName;
+                        public readonly Guid FriendAccountGuid;
                         private string _currentCharacterName;
                         private Map _map;
                         private PlayerStatus _playerStatus;
 
-                        internal Entry(Type type, string baseCharacterName, string currentCharacterName = "", PlayerStatus playerStatus = PlayerStatus.Offline, Map map = 0)
+                        public Entry(Type type, Guid friendAccountGuid, string baseCharacterName, string currentCharacterName = "", PlayerStatus playerStatus = PlayerStatus.Offline, Map map = 0)
                         {
                                 Type = type;
+                                FriendAccountGuid = friendAccountGuid;
                                 BaseCharacterName = baseCharacterName;
                                 _currentCharacterName = currentCharacterName;
                                 _playerStatus = playerStatus;

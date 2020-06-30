@@ -18,7 +18,7 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(64, CastSkillHandler);
+                        controllerManager.RegisterHandler((int) GameClientMessage.CastSkill, CastSkillHandler);
                 }
 
                 private void CastSkillHandler(List<object> objects)
@@ -34,8 +34,8 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                                 Network.GameServer.Send(GameServerMessage.SkillRechargedVisualAutoAfterRecharge,
                                                         IdManager.GetId(Game.Player.Character),
-                                                        (ushort) objects[1],
-                                                        (uint) objects[2]);
+                                                        (ushort) objects[1], //skillID
+                                                        (uint) objects[2]); //skillInstance
 
                                 return;
                         }

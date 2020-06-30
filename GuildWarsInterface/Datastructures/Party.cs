@@ -39,11 +39,16 @@ namespace GuildWarsInterface.Datastructures
                         get { return _members.ToArray(); }
                 }
 
+                public Party[] Invites
+                {
+                        get { return _invites.ToArray(); }
+                }
+
                 protected override void OnCreation()
                 {
-                        Network.GameServer.Send(GameServerMessage.CreateParty1, IdManager.GetId(this));
+                        Network.GameServer.Send(GameServerMessage.CreateParty, IdManager.GetId(this));
                         Network.GameServer.Send(GameServerMessage.AddPartyMember, IdManager.GetId(this), (ushort) IdManager.GetId(Leader), (byte) 1);
-                        Network.GameServer.Send(GameServerMessage.CreateParty2, IdManager.GetId(this));
+                        Network.GameServer.Send(GameServerMessage.CreatePartyStreamEnd, IdManager.GetId(this));
                 }
 
                 protected override void OnDestruction()
@@ -71,7 +76,8 @@ namespace GuildWarsInterface.Datastructures
 
                                 if (member == Leader) continue;
 
-                                Network.GameServer.Send(GameServerMessage.AddPartyMember, IdManager.GetId(this), (ushort) IdManager.GetId(member), (byte) 1);
+                                Network.GameServer.Send(GameServerMessage.AddPartyMember, IdManager.GetId(this), (ushort) IdManager.GetId(member),
+                                        (byte) 1); //isLoaded
                         }
 
                         if (_members.Contains(Game.Player.Character))

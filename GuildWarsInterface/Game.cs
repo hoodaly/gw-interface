@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Linq;
@@ -29,6 +29,8 @@ namespace GuildWarsInterface
                         ChallengeRecords,
                         Stylist
                 }
+
+                public static short PortOffset = 0;
 
                 public static readonly Player Player = new Player();
 
@@ -71,13 +73,18 @@ namespace GuildWarsInterface
                         Network.GameServer.Send(GameServerMessage.OpenWindow, IdManager.GetId(Player.Character), (byte) window, data);
                 }
 
+                public static void StartMapChange()
+                {
+                        if (State == GameState.Playing) State = GameState.ChangingMap;
+                }
+
                 public static void ChangeMap(Map map, Action<Zone> initialization)
                 {
                         if (State == GameState.Playing) State = GameState.ChangingMap;
 
                         var newZone = new Zone(map);
-
                         initialization(newZone);
+                        Zone = newZone;
 
                         if (State == GameState.CharacterScreen)
                         {
@@ -89,7 +96,7 @@ namespace GuildWarsInterface
                                                         (uint) newZone.Map,
                                                         new byte[]
                                                                 {
-                                                                        0x02, 0x00, 0x23, 0x98, 0x7F, 0x00, 0x00, 0x01,
+                                                                        0x02, 0x00, 0x23, 0x98, 0x22, 0x22, 0x22, 0x22,
                                                                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                                                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
                                                                 },
@@ -102,7 +109,7 @@ namespace GuildWarsInterface
                                 Network.GameServer.Send(GameServerMessage.Dispatch,
                                                         new byte[]
                                                                 {
-                                                                        0x02, 0x00, 0x23, 0x98, 0x7F, 0x00, 0x00, 0x01,
+                                                                        0x02, 0x00, 0x23, 0x98, 0x22, 0x22, 0x22, 0x22,
                                                                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                                                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
                                                                 },
@@ -116,8 +123,6 @@ namespace GuildWarsInterface
                         {
                                 Debug.ThrowException(new Exception("cannot change zone in gamestate " + State));
                         }
-
-                        Zone = newZone;
                 }
 
                 public static void TimePassed(uint milliseconds)

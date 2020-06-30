@@ -1,7 +1,13 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using GuildWarsInterface.Controllers.Base;
+using GuildWarsInterface.Datastructures.Items;
+using GuildWarsInterface.Declarations;
+using GuildWarsInterface.Debugging;
+using GuildWarsInterface.Misc;
+using GuildWarsInterface.Networking.Protocol;
 
 #endregion
 
@@ -11,47 +17,47 @@ namespace GuildWarsInterface.Controllers.GameControllers
         {
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(42, EquipItemHandler);
-                        controllerManager.RegisterHandler(44, ChangeWeaponsetHandler);
-                        controllerManager.RegisterHandler(73, UnEquipItemHandler);
-                        controllerManager.RegisterHandler(101, EquipBagHandler);
-                        controllerManager.RegisterHandler(110, MoveBagHandler);
-                        controllerManager.RegisterHandler(108, MoveItemHandler);
-                        controllerManager.RegisterHandler(119, UnEquipBagHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.EquipItem, EquipItemHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.ChangeWeaponset, ChangeWeaponsetHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.UnEquipItem, UnEquipItemHandler);
+                        //controllerManager.RegisterHandler(101, EquipBagHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.MoveBag, MoveBagHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.MoveItem, MoveItemHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.UnEquipBag, UnEquipBagHandler);
                 }
 
                 private void EquipItemHandler(List<object> objects)
                 {
-                        /*Item item;
+                        Item item;
                         if (!IdManager.TryGet((uint) objects[1], out item))
                         {
                                 Debug.ThrowException(new ArgumentException("unknown item id"));
                         }
 
                         EquipmentSlot equipmentSlot;
-                        if (!DeclarationConversion.ItemTypeToEquipmentSlot(item.Type, out equipmentSlot))
+                        if (!DeclarationConversion.ItemTypeToEquipmentSlot(item.GetItemType(), out equipmentSlot))
                         {
                                 Debug.ThrowException(new ArgumentException("cannot equip item (unknown itemtype->equipmentslot conversion)"));
                         }
 
-                        Game.Player.Inventory.SetItem(item, Game.Player.Inventory.Equipment, equipmentSlot);*/
+                        Game.Player.Character.Inventory.SetItem(item, Game.Player.Character.Inventory.Equipment, equipmentSlot);
                 }
 
                 private void ChangeWeaponsetHandler(List<object> objects)
                 {
-                        //Game.Player.Inventory.Equipment.SetActiveWeaponset((byte) objects[1]);
+                        Game.Player.Character.Inventory.Equipment.SetActiveWeaponset((byte) objects[1]);
                 }
 
                 private void UnEquipItemHandler(List<object> objects)
                 {
-                        /*var equipmentSlot = (EquipmentSlot) (byte)objects[1];
+                        var equipmentSlot = (EquipmentSlot) (byte)objects[1];
 
                         InventoryPage targetPage;
-                        if (!IdManager.TryGet((uint) objects[2], out targetPage))
+                        if (!IdManager.TryGet((ushort) objects[2], out targetPage))
                         {
                                 Debug.ThrowException(new ArgumentException("unknown page id"));
                         }
-                        else if (targetPage == Game.Player.Inventory.Equipment)
+                        else if (targetPage == Game.Player.Character.Inventory.Equipment)
                         {
                                 Debug.ThrowException(new ArgumentException("cannot unequip to equipment"));
                         }
@@ -77,18 +83,18 @@ namespace GuildWarsInterface.Controllers.GameControllers
                         }
 
                         Item equippedItem;
-                        if (!Game.Player.Inventory.Equipment.TryGet(equipmentSlot, out equippedItem))
+                        if (!Game.Player.Character.Inventory.Equipment.TryGet(equipmentSlot, out equippedItem))
                         {
                                 Debug.ThrowException(new ArgumentException("no equipped item at equipment slot"));
                         }
 
-                        Game.Player.Inventory.SetItem(equippedItem, targetBag, targetSlot);*/
+                        Game.Player.Character.Inventory.SetItem(equippedItem, targetBag, targetSlot);
                 }
 
 
                 private void UnEquipBagHandler(List<object> objects)
                 {
-                        /*Item bag;
+                        Item bag;
                         if (!IdManager.TryGet((uint) objects[1], out bag))
                         {
                                 Debug.ThrowException(new ArgumentException("unknown bag item"));
@@ -118,12 +124,12 @@ namespace GuildWarsInterface.Controllers.GameControllers
                                 slot--;
                         }
 
-                        Game.Player.Inventory.SetItem(bag, page, slot);*/
+                        Game.Player.Character.Inventory.SetItem(bag, page, slot);
                 }
 
                 private void EquipBagHandler(List<object> objects)
                 {
-                        /*Item bag;
+                        Item bag;
                         if (!IdManager.TryGet((uint) objects[1], out bag))
                         {
                                 Debug.ThrowException(new ArgumentException());
@@ -135,7 +141,7 @@ namespace GuildWarsInterface.Controllers.GameControllers
                         {
                                 // first free slot (gets used when item is drawn directly on a bag)
 
-                                if (!Game.Player.Inventory.TryGetFreeBagSlot(out slot))
+                                if (!Game.Player.Character.Inventory.TryGetFreeBagSlot(out slot))
                                 {
                                         // TODO: add apropriate native handling
                                         Console.WriteLine("no empty bag slot left");
@@ -147,12 +153,12 @@ namespace GuildWarsInterface.Controllers.GameControllers
                                 slot--;
                         }
 
-                        Game.Player.Inventory.SetBag(bag, slot);*/
+                        Game.Player.Character.Inventory.SetBag(bag, slot);
                 }
 
                 private void MoveItemHandler(List<object> objects)
                 {
-                        /*Item item;
+                        Item item;
                         if (!IdManager.TryGet((uint) objects[1], out item))
                         {
                                 Debug.ThrowException(new ArgumentException("unknown item id"));
@@ -164,19 +170,19 @@ namespace GuildWarsInterface.Controllers.GameControllers
                                 Debug.ThrowException(new ArgumentException("unknown page id"));
                         }
 
-                        MoveItem(item, page, (byte) objects[3]);*/
+                        page.MoveItem(item, (byte) objects[3]);
                 }
 
                 private void MoveBagHandler(List<object> objects)
                 {
-                        /*Bag bagToMove = Game.Player.Inventory.GetBag((byte) objects[1]);
+                        Bag bagToMove = Game.Player.Character.Inventory.GetBag((byte) objects[1]);
 
                         if (bagToMove == null)
                         {
                                 Debug.ThrowException(new ArgumentException("bag to move must exist"));
                         }
 
-                        MoveBag(bagToMove, (byte) objects[2]);*/
+                        Game.Player.Character.Inventory.MoveBag(bagToMove, (byte) objects[2]);
                 }
         }
 }

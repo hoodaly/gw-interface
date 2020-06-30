@@ -1,7 +1,9 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using GuildWarsInterface.Modification.Hooks;
 using GuildWarsInterface.Modification.Native;
 
 #endregion
@@ -10,14 +12,17 @@ namespace GuildWarsInterface.Modification.Patches
 {
         internal static class DisableEncryptionPatch
         {
-                private static readonly IntPtr _location = (IntPtr) 0x005900BB;
-
                 public static void Apply()
                 {
-                        uint dwOldProtection;
-                        Kernel32.VirtualProtect(_location, 5, 0x40, out dwOldProtection);
-                        Marshal.Copy(new byte[] {0x8A, 0x14, 0x18}, 0, _location, 3);
-                        Kernel32.VirtualProtect(_location, 5, dwOldProtection, out dwOldProtection);
+                        List<int> addrs = HookHelper.searchAsm(new byte[] { 0x32, 0x44, 0x0a, 0xff });
+                        foreach(int addr in addrs)
+                        {
+                                IntPtr location = (IntPtr) addr;
+                                uint dwOldProtection;
+                                Kernel32.VirtualProtect(location, 1, 0x40, out dwOldProtection);
+                                Marshal.WriteByte(location, 0x8a);
+                                Kernel32.VirtualProtect(location, 1, dwOldProtection, out dwOldProtection);
+                        }
                 }
         }
 }

@@ -39,7 +39,7 @@ namespace GuildWarsInterface.Controllers.AuthControllers
 
                 private void MoveFriendListEntryHandler(List<object> objects)
                 {
-                        bool success = AuthLogic.MoveFriend((string)objects[3], (FriendList.Type)(uint)objects[2]);
+                        bool success = AuthLogic.MoveFriend(new Guid((byte[])objects[3]), (FriendList.Type)(uint)objects[2]);
 
                         Network.AuthServer.TransactionCounter = (uint) objects[1];
                         Network.AuthServer.SendTransactionSuccessCode(success ? TransactionSuccessCode.Success : TransactionSuccessCode.Aborted);
@@ -64,6 +64,7 @@ namespace GuildWarsInterface.Controllers.AuthControllers
                 {
                         Network.AuthServer.TransactionCounter = (uint) objects[1];
 
+                        // Wait for success from GameServer
                         Network.AuthServer.SendTransactionSuccessCode(TransactionSuccessCode.Success);
                 }
 
@@ -86,9 +87,15 @@ namespace GuildWarsInterface.Controllers.AuthControllers
 
                 private void Packet32Handler(List<object> objects)
                 {
-                        Network.AuthServer.TransactionCounter = (uint) objects[1];
+                        Network.AuthServer.TransactionCounter = (uint)objects[1];
 
                         Network.AuthServer.SendTransactionSuccessCode(TransactionSuccessCode.Success);
+                }
+
+                private void Packet35Handler(List<object> objects)
+                {
+
+                        Network.AuthServer.Send((AuthServerMessage)23, (ushort) 0);
                 }
 
                 private void PlayRequest(List<object> objects)
@@ -104,16 +111,16 @@ namespace GuildWarsInterface.Controllers.AuthControllers
                                 Game.State = GameState.CharacterCreation;
 
                                 Network.AuthServer.Send(AuthServerMessage.Dispatch,
-                                                        Network.AuthServer.TransactionCounter,
-                                                        0,
-                                                        mapId,
-                                                        new byte[]
-                                                                {
-                                                                        0x02, 0x00, 0x23, 0x98, 0x7F, 0x00, 0x00, 0x01,
-                                                                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                                                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                                                                },
-                                                        0);
+                                                Network.AuthServer.TransactionCounter,
+                                                0,
+                                                mapId,
+                                                new byte[]
+                                                        {
+                                                                0x02, 0x00, 0x23, 0x98, 0x22, 0x22, 0x22, 0x22,
+                                                                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                                                        },
+                                                0);
                         }
                 }
 
@@ -148,6 +155,7 @@ namespace GuildWarsInterface.Controllers.AuthControllers
                                 Debug.ThrowException(new Exception("account does not contain " + characterToDelete));
                         }
 
+                        AuthLogic.DeleteCharacter(characterToDelete);
                         Game.Player.Account.RemoveCharacter(characterToDelete);
 
                         Network.AuthServer.SendTransactionSuccessCode(TransactionSuccessCode.Success);

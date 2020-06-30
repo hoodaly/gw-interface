@@ -1,10 +1,12 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using GuildWarsInterface.Controllers.Base;
 using GuildWarsInterface.Declarations;
+using GuildWarsInterface.Datastructures.Items;
+using GuildWarsInterface.Datastructures.Components;
 using GuildWarsInterface.Misc;
 using GuildWarsInterface.Networking;
 using GuildWarsInterface.Networking.Protocol;
@@ -15,21 +17,28 @@ namespace GuildWarsInterface.Controllers.GameControllers
 {
         internal class InstanceLoadController : IController
         {
+                private bool dumped = false;
+
                 public void Register(IControllerManager controllerManager)
                 {
-                        controllerManager.RegisterHandler(139, InstanceLoadRequestItemsHandler);
-                        controllerManager.RegisterHandler(130, InstanceLoadRequestMapDataHandler);
-                        controllerManager.RegisterHandler(138, InstanceLoadRequestPlayerDataHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.InstanceLoadRequestItems, InstanceLoadRequestItemsHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.InstanceLoadRequestMapData, InstanceLoadRequestMapDataHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.InstanceLoadRequestPlayerData, InstanceLoadRequestPlayerDataHandler);
                 }
 
                 private void InstanceLoadRequestItemsHandler(List<object> objects)
                 {
-                        Network.GameServer.Send(GameServerMessage.CreateInventory, (ushort) 1, (byte) 0);
+                        Game.Player.Character.Inventory.CreateStream();
                         Network.GameServer.Send(GameServerMessage.UpdateActiveWeaponset, (ushort) 1, (byte) 0);
 
+                        Item item = new Item(ItemType.Dagger, 2147785208, "MOON", (ItemFlags)706876416, new ItemColor(Dye.Black), new ItemStat[] { new ItemStat(ItemStatIdentifier.WeaponRequirement, 0x1d, 0x09), new ItemStat(ItemStatIdentifier.DamageType, 0x02, 0x00), new ItemStat(ItemStatIdentifier.WeaponDamage, 0x11, 0x7) });
+                        Item bagItem = new Item(ItemType.Bag, 2147595574, "BAG", (ItemFlags)536875009, new ItemColor(0), new ItemStat[] { new ItemStat(ItemStatIdentifier.Slots, 20, 0) });
+                        //bagItem.Create();
+                        Game.Player.Character.Inventory.SetBag(bagItem, 0);
+                        Game.Player.Character.Inventory.SetItem(item, Game.Player.Character.Inventory.Backpack, 0);
                         Game.Player.Character.Inventory.LoadItems();
 
-                        Network.GameServer.Send(GameServerMessage.ConnectionStatus, (byte) 0, (ushort) 0x160, 0x85EB21CD);
+                        Network.GameServer.Send(GameServerMessage.ConnectionStatus, (byte)0, (ushort)Game.Zone.Map, 0);
                 }
 
                 private void InstanceLoadRequestMapDataHandler(List<object> objects)
@@ -38,44 +47,46 @@ namespace GuildWarsInterface.Controllers.GameControllers
 
                         Network.GameServer.Send(GameServerMessage.InstanceLoadMapData,
                                                 MapData.GetMapFile(Game.Zone.Map),
-                                                data[0],
-                                                data[1],
-                                                (ushort) 0,
-                                                (byte) 0,
-                                                (byte) 0);
-
-                        foreach (Map unlockedOutpost in Enum.GetValues(typeof (Map)).Cast<Map>())
-                        {
-                                Network.GameServer.Send(GameServerMessage.ShowOutpostOnWorldMap,
-                                                        (ushort) unlockedOutpost,
-                                                        (byte) 0);
-                        }
+                                                data[0], //spawnposX
+                                                data[1], //spawnposY
+                                                (ushort)0, //spawnPlane
+                                                (byte)254, //unknown
+                                                (byte)0, //isCinematic
+                                                (ulong)(DateTime.Now.Ticks / 10));
+                        //new byte[] { 0xf5, 0x9f, 0x41, 0x77, 0xc0, 0x6f, 0xd5, 0x01 });
                 }
 
                 private void InstanceLoadRequestPlayerDataHandler(List<object> objects)
                 {
-                        Network.GameServer.Send(GameServerMessage.PlayerData230, 0x61747431);
+                        foreach (Map unlockedOutpost in Enum.GetValues(typeof(Map)).Cast<Map>())
+                        {
+                                Network.GameServer.Send(GameServerMessage.ShowOutpostOnWorldMap,
+                                                        (ushort)unlockedOutpost,
+                                                        (byte)0); //unknown
+                        }
+
+                        Network.GameServer.Send(GameServerMessage.PlayerData230, 1886151033); // 1886151033=play
 
                         Game.Player.Abilities.LoadAbilities1();
 
                         Game.Player.Character.SkillBar.SendUpdateSkillBarPacket();
 
                         Network.GameServer.Send(GameServerMessage.PlayerData221,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
+                                                540087, //experience
+                                                16920, //kurzickFree
+                                                353966, //kurzickTotal
+                                                20, //luxonTotal
+                                                4186028, //luxonFree
+                                                0, //imperialFree
+                                                0, //imperialTotal
+                                                19, //unknown
+                                                23, //unknown
                                                 (uint) Game.Player.Character.Level,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0);
+                                                100, //morale
+                                                1900, //balthFree
+                                                601665, //balthTotal
+                                                38, //skillFree
+                                                88); //skillTotal
 
 
                         Game.Player.Character.Create();
@@ -140,6 +151,8 @@ namespace GuildWarsInterface.Controllers.GameControllers
                         Game.Zone.CreateParties();
 
                         Game.State = GameState.Playing;
+                        // Send pending Transaction success
+                        //Network.AuthServer.SendTransactionSuccessCode(TransactionSuccessCode.Success);
 
                         LoadingComplete();
                 }

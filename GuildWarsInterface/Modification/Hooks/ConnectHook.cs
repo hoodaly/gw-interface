@@ -1,8 +1,9 @@
-﻿#region
+#region
 
 using System;
 using System.Net;
 using System.Runtime.InteropServices;
+using GuildWarsInterface.Debugging;
 using GuildWarsInterface.Modification.Native;
 using GuildWarsInterface.Networking.Servers;
 
@@ -15,13 +16,14 @@ namespace GuildWarsInterface.Modification.Hooks
                 private static HookType _hookDelegate;
                 private static HookType _originalDelegate;
 
-                private static readonly IntPtr _hookAddress = (IntPtr) 0x00403B7A;
+                private static IntPtr _hookAddress;
 
                 public static void Install()
                 {
                         _hookDelegate = Hook;
 
                         IntPtr addr = Kernel32.GetProcAddress(Kernel32.GetModuleHandle("ws2_32.dll"), "connect");
+                        _hookAddress = HookHelper.GetThunkLocation("ws2_32.dll", "connect");
 
                         _originalDelegate = (HookType) Marshal.GetDelegateForFunctionPointer(addr, typeof (HookType));
 
@@ -33,14 +35,24 @@ namespace GuildWarsInterface.Modification.Hooks
                         const short STANDARD_GAMESERVER_PORT = 9112;
 
                         short port = Marshal.ReadInt16(addr + 2);
+                        byte srv_id = Marshal.ReadByte(addr + 4);
 
                         if (BigEndian(port) != STANDARD_GAMESERVER_PORT)
+                        switch (srv_id)
                         {
-                                Marshal.WriteInt16(addr + 2, GetHostByNameHook.LastHostName.StartsWith("Auth") ? BigEndian(AuthServer.PORT) : BigEndian(FileServer.PORT));
-                        }
-                        else
-                        {
-                                Marshal.WriteInt16(addr + 2, BigEndian(GameServer.PORT));
+                                case 0x12:
+                                        Marshal.WriteInt16(addr + 2, BigEndian((short)(AuthServer.PORT + Game.PortOffset)));
+                                        break;
+                                case 0x13:
+                                        Marshal.WriteInt16(addr + 2, BigEndian((short)(FileServer.PORT + Game.PortOffset)));
+                                        break;
+                                case 0x14:
+                                        // Don't connect other fileservers
+                                        return -1;
+                                default:
+                                        //game server
+                                        Marshal.WriteInt16(addr + 2, BigEndian((short)(GameServer.PORT + Game.PortOffset)));
+                                        break;
                         }
 
                         Marshal.WriteInt32(addr + 4, BitConverter.ToInt32(IPAddress.Loopback.GetAddressBytes(), 0));

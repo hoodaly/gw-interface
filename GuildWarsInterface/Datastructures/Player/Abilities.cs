@@ -44,7 +44,7 @@ namespace GuildWarsInterface.Datastructures.Player
                                                                 IdManager.GetId(Game.Player.Character),
                                                                 (byte) _profession.Primary,
                                                                 (byte) _profession.Secondary,
-                                                                (byte) 1);
+                                                                (byte) 1); // maybe 0
                                 }
                         }
                 }
@@ -160,7 +160,7 @@ namespace GuildWarsInterface.Datastructures.Player
                         Network.GameServer.Send(GameServerMessage.SetAttributePoints,
                                                 IdManager.GetId(Game.Player.Character),
                                                 _freeAttributePoints,
-                                                (byte) 0);
+                                                (byte) 0); //maxPts
                 }
 
                 internal void LoadAbilities2()

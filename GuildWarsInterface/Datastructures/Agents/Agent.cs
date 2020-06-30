@@ -88,28 +88,28 @@ namespace GuildWarsInterface.Datastructures.Agents
                                                 (byte) 5,
                                                 Transformation.Position.X,
                                                 Transformation.Position.Y,
-                                                (ushort) 0,
-                                                (float) 0,
-                                                (float) 0,
-                                                (byte) 1,
+                                                (ushort) 0, //positionPlane
+                                                (float) 0, //directionRotationX
+                                                (float) 0, //directionRotationY
+                                                (byte) 1, //unknown
                                                 Speed,
-                                                float.PositiveInfinity,
-                                                0,
-                                                (allied ? 0x61747431 : a),
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                0,
-                                                (float) 0,
-                                                (float) 0,
-                                                float.PositiveInfinity,
-                                                float.PositiveInfinity,
-                                                (ushort) 0,
-                                                0,
-                                                float.PositiveInfinity,
-                                                float.PositiveInfinity,
-                                                (ushort) 0);
+                                                float.PositiveInfinity, //unknown
+                                                0, //unknown
+                                                (allied ? 1886151033 : a), //spawnType
+                                                0, //unknown
+                                                0, //unknown
+                                                0, //unknown
+                                                0, //unknown
+                                                0, //unknown
+                                                (float) 0, //unknown
+                                                (float) 0, //unknown
+                                                float.PositiveInfinity, //unknown
+                                                float.PositiveInfinity, //unknown
+                                                (ushort) 0, //unknown
+                                                0, //unknown
+                                                float.PositiveInfinity, //unknown
+                                                float.PositiveInfinity, //unknown
+                                                (ushort) 0); //unknown
                 }
 
                 public void AttackFailed(Agent target, AttackFailType type)

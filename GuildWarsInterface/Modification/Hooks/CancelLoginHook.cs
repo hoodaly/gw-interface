@@ -7,8 +7,9 @@ namespace GuildWarsInterface.Modification.Hooks
         internal class CancelLoginHook
         {
                 internal static void Install(HookType hook)
-                {
-                        var hookLocation = new IntPtr(0x0A2B2E8);
+        {
+                        return;
+            var hookLocation = new IntPtr(0x0A2B2E8);
 
                         IntPtr codeCave = Marshal.AllocHGlobal(128);
 
