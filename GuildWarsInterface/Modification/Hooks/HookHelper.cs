@@ -18,7 +18,7 @@ namespace GuildWarsInterface.Modification.Hooks
         {
                 public static IntPtr BaseAddress = (IntPtr) 0;
                 public static IntPtr EndAddress = (IntPtr) 0;
-                public static new Dictionary<string, IntPtr> ThunkDict = new Dictionary<string, IntPtr>();
+                public static Dictionary<string, IntPtr> ThunkDict = new Dictionary<string, IntPtr>();
 
 
 
