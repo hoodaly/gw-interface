@@ -20,7 +20,8 @@ namespace GuildWarsInterface.Networking
                 {
                         GetHostByNameHook.Install();
                         ConnectHook.Install();
-                        SendHook.Install();
+                        SendHook.InstallSend();
+                        SendHook.InstallRecv();
                         PortPatch.Apply();
                         DisableEncryptionPatch.Apply();
                         GameProtocolHook.Install2((msgid, msg) =>
