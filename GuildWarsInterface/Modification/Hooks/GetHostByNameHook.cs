@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -18,7 +19,8 @@ namespace GuildWarsInterface.Modification.Hooks
 
                 private static IntPtr _hookAddress;
 
-                public static string LastHostName { get; private set; }
+                public static List<IPAddress> LookedupAuthIPs { get; private set; } = new List<IPAddress>();
+                public static List<IPAddress> LookedupFileIPs { get; private set; } = new List<IPAddress>();
 
                 public static void Install()
                 {
@@ -37,10 +39,9 @@ namespace GuildWarsInterface.Modification.Hooks
                         string hostName = Marshal.PtrToStringAnsi(name);
                         if (hostName.StartsWith("File") && !hostName.StartsWith("File1"))
                         {
-                                return 0; //WSAHOST_NOT_FOUND
+                                return 0;
                         }
-                        LastHostName = hostName;
-                        var ret = _originalDelegate(hWnd, wMsg, name, buf, buflen);
+                       var ret = _originalDelegate(hWnd, wMsg, name, buf, buflen);
                         if (ret == 0)
                         {
                                 return ret;
@@ -49,39 +50,25 @@ namespace GuildWarsInterface.Modification.Hooks
                         {
                                 Thread.Sleep(100);
                         }
-                        Thread.Sleep(100);
+                        Thread.Sleep(500);
                         var addrBase = Marshal.ReadIntPtr(Marshal.ReadIntPtr(buf + 12));
                         var ipb = new byte[4];
-                        Marshal.Copy(addrBase, ipb, 0, 4);
-                        IPAddress ip = new IPAddress(ipb);
-                        if (hostName.StartsWith("Auth"))
+                        IPAddress end = new IPAddress(new byte[]{ 0, 0, 0, 0});
+                        for (int i = 0; ; i++)
                         {
-                                Marshal.Copy(new byte[] { 0x12, 0x12, 0x12, 0x12 }, 0, addrBase, 4);
-                                Marshal.Copy(new byte[] { 0x12, 0x12, 0x12, 0x12 }, 0, addrBase+4, 4);
-                                Debug.Log("Lookup " + hostName + " (Auth)");
+                                Marshal.Copy(addrBase+i*4, ipb, 0, 4);
+                                IPAddress a = new IPAddress(ipb);
+                                if (a.Equals(end)) {
+                                        break;
+                                }
+                                if (hostName.StartsWith("File"))
+                                {
+                                        LookedupFileIPs.Add(a);
+                                } else if(hostName.StartsWith("Auth"))
+                                {
+                                        LookedupAuthIPs.Add(a);
+                                }
                         }
-                        else
-                        if (hostName.StartsWith("File1."))
-                        {
-                                Marshal.Copy(new byte[] { 0x13, 0x13, 0x13, 0x13 }, 0, addrBase, 4);
-                                Marshal.Copy(new byte[] { 0x13, 0x13, 0x13, 0x13 }, 0, addrBase+4, 4);
-                                Debug.Log("Lookup " + hostName + " (F1)");
-                        }
-                        else
-                        if (hostName.StartsWith("File"))
-                        {
-                                Marshal.Copy(new byte[] { 0x14, 0x14, 0x14, 0x14 }, 0, addrBase, 4);
-                                Marshal.Copy(new byte[] { 0x14, 0x14, 0x14, 0x14 }, 0, addrBase+4, 4);
-                                Debug.Log("Lookup " + hostName + " (F2)");
-                        } else
-                        {
-                                // Gameserver
-                                Marshal.Copy(new byte[] { 0x15, 0x15, 0x15, 0x15 }, 0, addrBase, 4);
-                                Marshal.Copy(new byte[] { 0x15, 0x15, 0x15, 0x15 }, 0, addrBase+4, 4);
-                                Debug.Log("Lookup " + hostName + " (Game)");
-                        }
-                        // null terminate the list
-                        Marshal.Copy(new byte[] { 0x00, 0x00, 0x00, 0x00 }, 0, addrBase + 8, 4);
                         return ret;
                 }
 
