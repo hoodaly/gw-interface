@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GuildWarsInterface.Datastructures;
 using GuildWarsInterface.Datastructures.Agents;
 using GuildWarsInterface.Datastructures.Agents.Components;
+using GuildWarsInterface.Datastructures.Items;
 using GuildWarsInterface.Declarations;
 using GuildWarsInterface.Interaction;
 
@@ -35,6 +37,8 @@ namespace GuildWarsInterface.Logic
                 public delegate void SkillBarSwapSkillsHandler(uint slot1, uint slot2);
 
                 public delegate bool ValidateNewCharacterHandler(string name, PlayerAppearance apperance);
+
+                public delegate void ItemPickupHandler(DroppedItem item);
 
                 public static ChatMessageHandler ChatMessage = (message, channel) => Chat.ShowMessage(message, Game.Player.Character, Chat.GetColorForChannel(channel));
 
@@ -81,5 +85,16 @@ namespace GuildWarsInterface.Logic
                         };
 
                 public static ValidateNewCharacterHandler ValidateNewCharacter = (name, apperance) => false;
+
+                public static ItemPickupHandler ItemPickup = (droppedItem) => {
+                        byte bagSlot;
+                        Bag bag;
+                        if (!Game.Player.Character.Inventory.TryGetFreeSlot(out bag, out bagSlot))
+                        {
+                                return;
+                        }
+                        Game.Zone.RemoveAgent(droppedItem);
+                        Game.Player.Inventory.SetItem(droppedItem.Item, bag, bagSlot);
+                };
         }
 }

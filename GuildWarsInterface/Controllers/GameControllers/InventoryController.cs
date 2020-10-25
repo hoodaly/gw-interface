@@ -2,12 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GuildWarsInterface.Controllers.Base;
 using GuildWarsInterface.Datastructures.Items;
 using GuildWarsInterface.Declarations;
 using GuildWarsInterface.Debugging;
 using GuildWarsInterface.Misc;
 using GuildWarsInterface.Networking.Protocol;
+using GuildWarsInterface.Logic;
 
 #endregion
 
@@ -24,6 +26,7 @@ namespace GuildWarsInterface.Controllers.GameControllers
                         controllerManager.RegisterHandler((int)GameClientMessage.MoveBag, MoveBagHandler);
                         controllerManager.RegisterHandler((int)GameClientMessage.MoveItem, MoveItemHandler);
                         controllerManager.RegisterHandler((int)GameClientMessage.UnEquipBag, UnEquipBagHandler);
+                        controllerManager.RegisterHandler((int)GameClientMessage.ItemPickup, ItemPickupHandler);
                 }
 
                 private void EquipItemHandler(List<object> objects)
@@ -183,6 +186,16 @@ namespace GuildWarsInterface.Controllers.GameControllers
                         }
 
                         Game.Player.Character.Inventory.MoveBag(bagToMove, (byte) objects[2]);
+                }
+
+                private void ItemPickupHandler(List<object> objects)
+                {
+                        DroppedItem item;
+                        if (!IdManager.TryGet((uint) objects[1], out item))
+                        {
+                                Debug.ThrowException(new ArgumentException("Picked up item must exist"));
+                        }
+                        GameLogic.ItemPickup(item);
                 }
         }
 }

@@ -77,13 +77,35 @@ namespace GuildWarsInterface.Datastructures.Agents
                         Network.GameServer.Send(GameServerMessage.DespawnAgent, IdManager.GetId(this));
                 }
 
-                protected void Spawn(uint agentType, bool allied = true)
+                protected void Spawn(uint agentType, bool allied = true, uint secondaryId = 0)
                 {
-                        uint a = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("MONS"), 0);
+                        uint monster = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("MONS"), 0);
+                        uint player = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("yalp"), 0);
+                        uint item = BitConverter.ToUInt32(Encoding.ASCII.GetBytes("\x00\x00\x00\x34"), 0);
+                        
+                        uint type = 0;
+                        uint id = IdManager.GetId(this);
+                        uint _secondaryId = id;
+
+                        switch (agentType)
+                        {
+                                case 0:
+                                        type = item;
+                                        _secondaryId = secondaryId;
+                                        break;
+                                case 0x30000000:
+                                        type = player;
+                                        break;
+                                case 0x20000000:
+                                        type = monster;
+                                        break;
+                        }
+
+                        _secondaryId |= agentType;
 
                         Network.GameServer.Send(GameServerMessage.SpawnAgent,
-                                                IdManager.GetId(this),
-                                                agentType | IdManager.GetId(this),
+                                                id,
+                                                _secondaryId,
                                                 (byte) (agentType > 0 ? 1 : 4),
                                                 (byte) 5,
                                                 Transformation.Position.X,
@@ -95,7 +117,7 @@ namespace GuildWarsInterface.Datastructures.Agents
                                                 Speed,
                                                 float.PositiveInfinity, //unknown
                                                 0, //unknown
-                                                (allied ? 1886151033 : a), //spawnType
+                                                type, //spawnType
                                                 0, //unknown
                                                 0, //unknown
                                                 0, //unknown

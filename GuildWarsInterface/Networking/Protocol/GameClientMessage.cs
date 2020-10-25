@@ -5,11 +5,13 @@
                 ExitToCharacterScreen = 2,
                 ExitToLoginScreen = 3,
                 CommitMapChange = 9,//na, //Disconnect
+                DropItem = 51,
                 EquipItem = 55,//42,
                 ChangeWeaponset = 57,//44,
                 Attack = 58,//45,
                 KeyboardMove = 68,//55,
                 MouseMove = 69,//56,
+                ItemPickup = 70,
                 CastSkill = 77,//64,
                 BuyItem = 84,//71,
                 UnEquipItem = 86,//73,
