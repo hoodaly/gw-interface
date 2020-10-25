@@ -1,6 +1,7 @@
-#region
+﻿#region
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Runtime.InteropServices;
 using GuildWarsInterface.Debugging;
@@ -35,26 +36,32 @@ namespace GuildWarsInterface.Modification.Hooks
                         const short STANDARD_GAMESERVER_PORT = 9112;
 
                         short port = Marshal.ReadInt16(addr + 2);
+                        byte[] ip = new byte[4];
+                        Marshal.Copy(addr + 4, ip, 0, 4);
                         byte srv_id = Marshal.ReadByte(addr + 4);
+                        SendHook.TypeDict[socket] = (uint)port;
 
-                        if (BigEndian(port) != STANDARD_GAMESERVER_PORT)
-                        switch (srv_id)
+                        // change port based on target
+                        if (GetHostByNameHook.LookedupAuthIPs.FindAll(a => a.Equals(new IPAddress(ip))).Count > 0)
                         {
-                                case 0x12:
-                                        Marshal.WriteInt16(addr + 2, BigEndian((short)(AuthServer.PORT + Game.PortOffset)));
-                                        break;
-                                case 0x13:
-                                        Marshal.WriteInt16(addr + 2, BigEndian((short)(FileServer.PORT + Game.PortOffset)));
-                                        break;
-                                case 0x14:
-                                        // Don't connect other fileservers
-                                        return -1;
-                                default:
-                                        //game server
-                                        Marshal.WriteInt16(addr + 2, BigEndian((short)(GameServer.PORT + Game.PortOffset)));
-                                        break;
+                                Marshal.WriteInt16(addr + 2, BigEndian((short)(AuthServer.PORT + Game.PortOffset)));
                         }
+                        else if (GetHostByNameHook.LookedupFileIPs.FindAll(a => a.Equals(new IPAddress(ip))).Count > 0)
+                        {
+                                Marshal.WriteInt16(addr + 2, BigEndian((short)(FileServer.PORT + Game.PortOffset)));
+                                SendHook.TypeDict[socket] = 0x9999;
+                        }
+                        else
+                        {
+                                Marshal.WriteInt16(addr + 2, BigEndian((short)(GameServer.PORT + Game.PortOffset)));
+                                SendHook.TypeDict[socket] = (uint)STANDARD_GAMESERVER_PORT;
+                        }
+                        Debug.Log("Connecting (" + socket + "): " + srv_id + "(" + BitConverter.ToString(ip) + ":" + port + ")");
+                        
+                        // Uncomment for original server
+                        //return _originalDelegate(socket, addr, addrLen);
 
+                        // Connect to 127.0.0.1
                         Marshal.WriteInt32(addr + 4, BitConverter.ToInt32(IPAddress.Loopback.GetAddressBytes(), 0));
 
 
