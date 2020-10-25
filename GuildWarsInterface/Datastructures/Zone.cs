@@ -10,21 +10,21 @@ namespace GuildWarsInterface.Datastructures
 {
         public sealed class Zone
         {
-                private readonly List<Creature> _agents;
+                private readonly List<Agent> _agents;
                 private readonly List<Party> _parties;
 
                 internal Zone(Map map)
                 {
                         Map = map;
 
-                        _agents = new List<Creature>();
+                        _agents = new List<Agent>();
 
                         _parties = new List<Party>();
                 }
 
                 public Map Map { get; private set; }
 
-                public IEnumerable<Creature> Agents
+                public IEnumerable<Agent> Agents
                 {
                         get { return _agents.ToArray(); }
                 }
@@ -49,7 +49,7 @@ namespace GuildWarsInterface.Datastructures
                         }
                 }
 
-                public void AddAgent(Creature creature)
+                public void AddAgent(Agent creature)
                 {
                         _agents.Add(creature);
 
@@ -59,7 +59,7 @@ namespace GuildWarsInterface.Datastructures
                         }
                 }
 
-                public void RemoveAgent(Creature creature)
+                public void RemoveAgent(Agent creature)
                 {
                         _agents.Remove(creature);
 
@@ -71,7 +71,7 @@ namespace GuildWarsInterface.Datastructures
 
                 internal void SpawnAgents()
                 {
-                        foreach (Creature agent in _agents)
+                        foreach (Agent agent in _agents)
                         {
                                 if (Game.Player.Character == agent) continue;
 
